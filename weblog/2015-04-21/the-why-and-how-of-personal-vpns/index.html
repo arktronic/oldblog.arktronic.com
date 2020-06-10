@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>The why and how of personal VPNs - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">The why and how of personal VPNs</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2015-04-22T03:30:00">
+            Published on Tuesday, 21 April 2015 at 11:30 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Virtual private networks, or VPNs, are used by lots of companies, big and small, to connect offices to other offices around the world and to allow people to connect from remote locations into their corporate networks for a variety of reasons - usually having something to do with productivity. But a VPN isn't just for corporate connectivity. VPNs are used by individuals around the world to securely access resources at their homes and to enhance the security of their online activities.</p>
+<h2>What's the point (-to-point)?</h2>
+<p>The way I see it, there are two major reasons to have a VPN connection to your home. The first and rather straightforward one is resource access. If you have computers or servers or printers at home that you need to access remotely, VPNs let you do that. Now, if you only have a single computer at home that you might want to connect to, it's probably easier just to set up something like GoToMyPC or LogMeIn. But if you have other resources, or if you're a little paranoid and don't want to install proprietary always-on software, then a VPN might work better.</p>
+<p>The second, and arguably more important, reason to use a VPN is secure Internet access. Although it's not always obvious, there are many people who use the Internet insecurely without realizing it. This is usually a problem with Web browsing specifically, and especially when it's done in a public place. If you've ever accessed a public Wi-Fi hotspot, you've likely accessed some part of the Internet insecurely.</p>
+<h2>Public Wi-Fi is bad?</h2>
+<p>Public Wi-Fi hotspots that are available from your favorite coffee joint, or your hotel room, or the airport aren't bad per se. The problem is, they're not very secure. In fact, there's a hint to that effect in their very name: <em>public</em>. A lot of the activity you do while on a <em>public</em> hotspot is going to be public itself, even if nobody can see your laptop screen. If you browse to any website that isn't served over HTTPS, that entire information exchange is completely out in the open. There are free tools out there that make it extraordinarily easy to see what people nearby are sending and receiving over their wireless connections.</p>
+<p>And then, of course, there's malicious alteration of data. Depending on a number of factors, it's possible for someone to modify your Internet requests and responses in real-time as you're browsing online. Using tools like <a href="http://www.thoughtcrime.org/software/sslstrip/">sslstrip</a>, it's often easy to trick people into thinking they're on a secure website, when in fact the security was &quot;stripped&quot; from it. Yes, this applies to banking.</p>
+<p>Even if you don't bank in coffee shops, simply going to entertainment websites can be dangerous. People can modify the websites' contents to send you malware and infect your computer. This isn't science fiction; it's actually pretty easy to do when you have the right tools - most of which are, again, free.</p>
+<h2>VPN to save the day</h2>
+<p>Using a properly configured personal VPN, all your Internet traffic that might otherwise be susceptible to monitoring or unauthorized modification becomes (reasonably) secure once again. That's because all that traffic gets encrypted and sent through your home's Internet connection. Let me explain this another way, using state-of-the-art ASCII drawings.</p>
+<p>Here is what your Internet traffic looks like normally on a public Wi-Fi hotspot:</p>
+<pre><code>-------    P    -----------    P    -----------
+| YOU |  &lt;---&gt;  | HOTSPOT |  &lt;---&gt;  | WEBSITE |
+-------         -----------         -----------
+</code></pre>
+<p>The problem here is that the <code>HOTSPOT</code> section is, for the purposes of this example anyway, completely insecure. If somebody wants to tap into your communications there, they can do it, and you won't be able to stop them. You won't even know that they've done it, when it's done right. The <code>P</code> above the communication channels stands for &quot;plaintext&quot;, or in other words, the normal way that <code>WEBSITE</code> communicates. If either your plaintext request or the website's plaintext response is modified in that hotspot section, you're in trouble, and you won't necessarily know it, either.</p>
+<p>And here is what VPN traffic looks like in a similar setting:</p>
+<pre><code>-------    C    -----------    C    --------    P   -----------
+| YOU |  &lt;---&gt;  | HOTSPOT |  &lt;---&gt;  | HOME |  &lt;---&gt; | WEBSITE |
+-------         -----------         --------        -----------
+</code></pre>
+<p>The <code>C</code> above the communication channels between <code>YOU</code>, <code>HOTSPOT</code>, and <code>HOME</code> stands for &quot;ciphertext&quot;. This is encrypted data, which generally nobody can understand when listening passively at the hotspot, and more importantly, nobody can modify without repercussions. Any unauthorized modification to the ciphertext at the hotspot will be detected and cause the receiver of this bad data (either <code>YOU</code> or <code>HOME</code>, depending on direction) to discard it. <code>WEBSITE</code> will still send and receive plaintext, as it's designed to do, but instead of communicating with the insecure <code>HOTSPOT</code>, it will communicate with <code>HOME</code>, which will in turn communicate with <code>YOU</code> via <code>HOTSPOT</code> in a secure manner using ciphertext.</p>
+<h2>I'm convinced. How do I get started?</h2>
+<p>It is important to know that there are many different VPN protocols, servers, and clients out there, and they all have their pros and cons, as well as their supported server and client operating systems. <a href="http://en.wikipedia.org/wiki/Layer_2_Tunneling_Protocol#L2TP.2FIPsec">L2TP/IPsec</a> can be considered an &quot;enterprise&quot; standard; it's secure, but often very difficult to set up on both the server and client side. <a href="https://openvpn.net/">OpenVPN</a> is a popular open-source SSL/TLS-based VPN protocol, which is available cross-platform and sometimes even built into home routers. PPTP, though still widely available in modern higher-end routers, should be avoided as it is <a href="http://en.wikipedia.org/wiki/Point-to-Point_Tunneling_Protocol#Security">not secure</a>. There is also <a href="http://en.wikipedia.org/wiki/Secure_Socket_Tunneling_Protocol">SSTP</a>, a modern SSL/TLS-based VPN protocol from Microsoft; it's not widely supported outside of Windows.</p>
+<p>For personal use, my recommendation is to get a <a href="https://www.raspberrypi.org/">Raspberry Pi</a>, or better yet, a <a href="http://odroid.com/dokuwiki/doku.php?id=en:odroid-c1">Pi clone with gigabit Ethernet</a>. Put your favorite Linux distro on it, and then install <a href="https://www.softether.org/">SoftEther</a>.</p>
+<h2>The most versatile VPN server</h2>
+<p>From my research into various VPN solutions, SoftEther appears to be the most versatile. It's open source, available for Linux (not just x86) and Windows as both server and client, provides free dynamic DNS if your home Internet connection doesn't have a static IP, and it supports multiple VPN protocols!</p>
+<p>If you have different devices you wish to use to connect to your personal VPN, this works out great. In addition to the built-in SoftEther VPN protocol, you can enable SSTP and OpenVPN - all on the same port, even. For Android and Linux, you can download OpenVPN client software and connect to your VPN through that. This should, in theory, work for Macs as well. For Windows, you could do that too, or you can make use of the built-in support for SSTP to establish a native VPN connection.</p>
+<h2>Do it now</h2>
+<p>Whether you want to browse the Web securely in public places, or you want to access resources in your home, or you just want to play around with VPN tunneling, now is a good time to start. There are, of course, potential gotchas and other issues, as with any sufficiently complex technology. For example, depending on your VPN configuration, only some traffic might go through it, leaving your Internet traffic insecure. There are lots of resources online explaining how all of this stuff works. Check them out. Have fun. Be more secure.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2015-04-22T03:30:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

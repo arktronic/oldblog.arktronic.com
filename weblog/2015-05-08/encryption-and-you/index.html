@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Encryption and you - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Encryption and you</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2015-05-08T05:00:00">
+            Published on Friday, 8 May 2015 at 1:00 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>As software developers, we often have to deal with encrypting sensitive data. These days, for most of us, that simply means integrating with and enabling existing security frameworks. For web developers, it's often as easy as configuring the web server to use HTTPS. <em>(Please note that due to the relatively narrow focus of this post I'm purposely ignoring all the other measures that need to be taken to secure websites. For a quick intro, check out the <a href="https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project">OWASP Top Ten</a>).</em></p>
+<p>One big problem that we software developers face is that encryption is notoriously difficult to get right, and a lot of us don't even realize just how many things can go wrong. Even if you encrypt a message with your secret key, then decrypt it and verify that the message is the same, you may not be securing your encrypted data sufficiently.</p>
+<h2>What can go wrong?</h2>
+<p>I don't have an exhaustive list of the possible things that can go wrong when implementing encryption; I'm not sure one even exists. I do, however, know of a few things to watch out for.</p>
+<h3>Side-channel attacks</h3>
+<p>A side-channel attack is essentially an attack on a cryptosystem based on weaknesses in its implementation. Probably the most well known side-channel attack method is the <a href="http://en.wikipedia.org/wiki/Timing_attack">timing attack</a>. I won't go into details on how it works (that's what the Wikipedia link is for), but suffice it to say that the best way to avoid it is to <strong>never create your own encryption implementation</strong>. There are lots and lots of frameworks and other projects that provide encryption capabilities. Use them instead of implementing the encryption code yourself.</p>
+<p>Even if you are an amazingly talented developer, you may not know everything that you need to watch out for in order to create a secure implementation of an algorithm. For example, having constant-time byte comparisons in some situations is crucial to avoiding timing attacks. There are many other nuances (most of which I don't know either) that can affect the security of your implementation. Please, just use existing code that has been vetted and, better yet, formally audited by a trustworthy organization.</p>
+<p>It should go without saying that creating your own encryption algorithms is a terrible idea. Even encryption schemes created by respected cryptographers have been found to be cryptographically weak before, during peer review.</p>
+<h3>Misconfiguration</h3>
+<p>Did you hear about Sony's PS3 hack a few years back? They had a pretty <a href="http://www.engadget.com/2010/12/29/hackers-obtain-ps3-private-cryptography-key-due-to-epic-programm/">epic misconfiguration</a> of their firmware signature verification code. Instead of randomizing a particular variable needed in ECDSA, they accidentally kept it constant. This simple mistake allowed people to mathematically solve for the original signing key!</p>
+<p>Just like with side-channel attacks above, the best way to avoid misconfiguration issues is to rely on an existing framework's security implementation, assuming the framework itself is trustworthy. If you can't do that, then you need to do sufficient research into the algorithm and the APIs you're using to make sure that you are providing all the necessary information in the correct format and securely randomized, as the algorithm requirements may dictate. Remember, just because you can encrypt and then decrypt some string, doesn't necessarily mean that your system is secure.</p>
+<h3>Misunderstanding of the cryptosystem</h3>
+<p>Even if you do your due diligence and &quot;correctly&quot; use a cryptographic algorithm or system, your implicit assumptions about it may lead you astray. For example, are you familiar with the concept of authenticated encryption? If not, then you might be in for a shock. You see, without authenticated encryption, it's possible to modify the encrypted contents of a message in such a way that, when decrypted, the message may look well-formed, but it can have incorrect information.</p>
+<p>If you're familiar with the <a href="http://whatis.techtarget.com/definition/Confidentiality-integrity-and-availability-CIA">CIA triangle</a>, you should know that encryption generally falls under the C, or confidentiality. But in addition to it, you also need the I, or integrity. (Naturally, all of this is moot without the A, or availability, but that's a tad out of scope.) Let's get a little more concrete.</p>
+<h2>Confidentiality without integrity: an example</h2>
+<p>To restate my earlier point, when you don't verify integrity, your otherwise valid encryption scheme can fall victim to malicious modification. Here's a somewhat realistic example. Feel free to follow along in your own console if you have OpenSSL installed. (Hint: it's available via Git Bash if you're on Windows.)</p>
+<p>Let's say you're sending Alice an encrypted message about a money transfer to Bob. Start by creating a cleartext message.</p>
+<pre><code>$ echo Give Bob \$500 &gt; clear.txt
+$ cat clear.txt
+Give Bob $500
+</code></pre>
+<p>Next, encrypt that message with OpenSSL, using 128-bit AES in <a href="http://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#CBC">CBC mode</a>, with an IV of all zeros and password &quot;hunter2&quot;.</p>
+<pre><code>$ openssl enc -aes-128-cbc -iv 00000000000000000000000000000000 -pass pass:hunter2 -in clear.txt -out cipher.txt
+$ xxd -c 32 -p cipher.txt
+53616c7465645f5f1bfb00c57919b0082ca0dc3816b12a7ae78eddec8deb736f
+</code></pre>
+<p>If you're running this on Windows and you don't have <code>xxd</code>, try this instead:</p>
+<pre><code>$ perl -e 'local $/; print unpack &quot;H*&quot;, &lt;&gt;' cipher.txt
+</code></pre>
+<p>Now, let's decode that message with the same settings.</p>
+<pre><code>$ openssl enc -d -aes-128-cbc -iv 00000000000000000000000000000000 -pass pass:hunter2 -in cipher.txt
+Give Bob $500
+</code></pre>
+<p>In order for Alice to successfully decrypt the message like we did above, she needs to know both the IV and the password. For proper security, the IV must be random each time you encrypt something and, as it generally isn't considered to be a secret, it's often sent along with the encrypted message. The password, of course, is not sent.</p>
+<p>But we have a problem. Mallory, a malicious person, has intercepted the encrypted message and very slightly modified it. The only change made was to the IV: Alice received the IV as 00000000000f0e0e0000030000000000. So, she decrypted the message like we've done above.</p>
+<pre><code>$ openssl enc -d -aes-128-cbc -iv 00000000000f0e0e0000030000000000 -pass pass:hunter2 -in cipher.txt
+Give Mal $600
+</code></pre>
+<p>Oh no! Suddenly, the decrypted message has been changed to make Alice think that she needs to give a different amount of money to a different person! Note that in this particular example, the IV consisting of all zeros is unimportant; this demonstration relies only on relative changes to it.</p>
+<p>So how can we fix this problem? Is there a way for Alice to verify that the message hasn't been tampered with?</p>
+<h2>Authenticated encryption</h2>
+<p>To ensure the integrity of an encrypted message, it must be authenticated. There are a number of ways to do this, some more difficult than others. But one of the simplest ways is to not use CBC mode like we did above, and instead use an authenticated mode like <a href="http://en.wikipedia.org/wiki/Galois/Counter_Mode">GCM</a>.</p>
+<p>Unfortunately, due to the way GCM is handled in OpenSSL, a proper demo of it using the <code>openssl enc</code> command isn't possible. Regardless, GCM and other ways to authenticate ciphertext are extremely important to know about and understand.</p>
+<h2>Go forth and encrypt</h2>
+<p>In conclusion, please be aware of the various pitfalls surrounding the correct use of encryption. Understand what encryption provides and what it doesn't provide. And finally, if you're unsure about how to implement something related to security, please seek the advice of others. Just about the worst thing you can do is blindly guess - you could easily end up with a system that looks secure to the naked eye, but is completely broken when properly inspected.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2015-05-08T05:00:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

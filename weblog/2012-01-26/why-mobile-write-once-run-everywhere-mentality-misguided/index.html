@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Why the mobile "write once, run everywhere" mentality is misguided - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Why the mobile "write once, run everywhere" mentality is misguided</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2012-01-27T02:22:32">
+            Published on Thursday, 26 January 2012 at 9:22 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Every so often I see articles and news blurbs about yet another product that allows people to create a mobile app once and automagically publish it on all of the major smartphone platforms. Recently, I've seen lots of buzz around PhoneGap becoming fully-featured in regards to Windows Phone. And just today I saw an <a href="http://developers.slashdot.org/story/12/01/26/1937214/yahoos-project-to-disrupt-mobile-publishing">article on Slashdot</a> about Yahoo! getting into this space. Although, as a developer and a techy, I love the idea of being able to write an app and quickly have it available on multiple platforms, I must say I do not approve of actually doing it.</p>
+<p>I have two simple reasons for my opinion, one minor and one major. They are, respectively, performance and user experience. Let's start with the minor one, performance. In order to write cross-platform code, virtually all of the current solutions require such code to be written in JavaScript. Simply put, that makes apps run slowly. JS engines are improving at an impressive rate, yes, but there is just too much overhead when using such tactics as opposed to running native (or as close to native as possible) code. In other words, less overhead yields faster code execution. However, most of the time, this point tends to be moot. Rich visuals, combined with ever-improving JavaScript execution speeds, tend to cancel out any user-detectible delay. Obviously, when apps have to do intensive processing on their own their performance will suffer, but most apps don't actually do that. They're either simple enough to not need to perform such tasks, or they offload processing to a much more powerful server somewhere in the cloud. And let's not forget Mono. While the Android and iOS versions certainly aren't cheap, they allow the exact same backend code to run on both of those platforms as well as Windows Phone.</p>
+<p>Now let's discuss the real issue. Arguably the most important aspect of a mobile app is the user experience. If the app is slow or unresponsive or crashes a lot, that will be a major detriment to a user's enjoyment of said app. Depending on the severity of the issues, a user's response could range from opening the app less frequently to actively avoiding opening the app unless really necessary to just uninstalling the damned app. Of course, all of that is likely to be combined with negative reviews.</p>
+<p>So why does user experience suffer when using &quot;write once, run everywhere&quot; tools? Performance, as discussed above, is certainly a factor. But another factor is how well the app meshes with the rest of the platform. I don't just mean taking advantage of the appropriate platform APIs, which is itself problematic when they are so disparate among the different platforms. I mean the look and feel of apps. That's right, the stuff that so many of us developers hate dealing with, the interface and user interaction. Take a look at how the majority of iPhone apps look. The common buttons, the common paradigms. Now look at Windows Phone apps. (Android UX is sort of all over the place, especially with the radical transition Ice Cream Sandwich brings, so it doesn't make for a good example.) How can an app appear beautiful on Windows Phone when it looks like an iPhone app? All that unnecessary chrome, the radically different tab interface instead of pivots, and of course the back button on the screen, all seriously detract from the overall app experience.</p>
+<p>But why do so many of these tools pop up? Because they sound like an incredibly attractive proposition. Lazy developers (and I do not use the term lazy in a negative light here) love it because they can concentrate on making more apps in less time. Companies with tight finances can afford to release apps without spending a fortune on development. These are valid reasons, but if you have the option to make proper native apps, you should absolutely make that choice. Your users will thank you.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/22';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

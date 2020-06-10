@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>New blog and new tea - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">New blog and new tea</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2014-08-09T23:50:00">
+            Published on Saturday, 9 August 2014 at 7:50 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>It seems that I recreate my blog every few years, painstakingly migrating old posts to the new blog engine, ensuring that they continue to look decent, and generally improving things.
+It's no different this time: I've retired my Drupal-based blog, mainly because I'm tired of having to constantly make sure that it's updated to the latest version,
+so that newly discovered vulnerabilities in its codebase are fixed. Sure, its security is not nearly as bad as that of WordPress, but it's still annoying enough that I wanted something better.</p>
+<p>Most blog engines out there must be kept updated because they run complex dynamic code and are thus potentially vulnerable to various attacks - anything from simple <a href="https://www.owasp.org/index.php/SQL_injection">SQL injection</a> to <a href="https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29">XSS</a> and <a href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29">CSRF</a>.
+(As an aside, if you make websites, you <em>need</em> to check out <a href="https://www.owasp.org">OWASP</a>.)
+So, how can I have a blog and avoid having to keep its engine up to date to avoid security problems? By removing the dynamic on-the-fly processing! Enter the <strong>static site generator.</strong></p>
+<p>For those unfamiliar with this concept, it's pretty simple: you have a bunch of source files and an application that performs a one-time (offline) task of transforming those source files into a functioning website,
+complete with CSS, images, scripts, and whatever else a site needs - except for dynamically generated content such as PHP or ASP.NET or Rails code. You're left with just static HTML and resources,
+which dramatically reduces your website's attack surface. In addition to the improved security, you get more benefits like faster page loads and simpler, more effective caching.
+This is again due to the lack of dynamic content processing.</p>
+<p>Of course, static sites do have their limitations. Any kind of user-generated content cannot be hosted on them (although things like comments can be outsourced quite effectively to services such as <a href="https://disqus.com">Disqus</a>).
+Trivial functions like site search become impossible without relying on a third party to index your content.</p>
+<p>I am willing to work around issues caused by the lack of dynamic processing, so a static blog works for me. Once I came to this realization, I needed to pick the right static site generator. There are quite a few
+choices out there, with varying degrees of maintenance, power, and flexibility, and many runtimes. I think it's safe to say that <a href="http://jekyllrb.com">Jekyll</a> is currently the most popular one, especially given that it powers <a href="https://pages.github.com">GitHub Pages</a>.</p>
+<p>Unfortunately, I found Jekyll to be too restrictive in what it allows me to do, and most of the other generators ended up being just as restrictive, difficult to set up, or simply abandoned.
+All that made me come to the conclusion that I needed to write my own. So I did.</p>
+<p><a href="https://bitbucket.org/Arktronic/genmaicha">Genmaicha</a> is a static website generator written in C# for .NET and Mono, using Markdown for content markup and Razor for templating. It currently has no official releases, because it's in active development and
+its APIs have not yet stabilized. But it's far enough along that it currently powers this blog. If you're wondering about the name, <a href="http://en.wikipedia.org/wiki/Genmaicha">genmaicha</a> is a delicious Japanese green tea with roasted rice.</p>
+<p>I used an existing HTML to Markdown converter (and tweaked it a bit) to convert my old posts from my Drupal blog to Markdown files, and then I created a completely new design from scratch.
+I think it looks a lot better than the old blog. I would appreciate any feedback on Genmaicha or on the design of the new blog!</p>
+<p>By the way, Genmaicha is licensed under the permissive, OSI-approved <a href="http://opensource.org/licenses/ISC">ISC License</a>. I'm not a fan of strong copyleft licenses such as the GPL: my definition of software freedom, unlike that of the FSF,
+includes the freedom to make proprietary customizations to software.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2014-08-09T23:50:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

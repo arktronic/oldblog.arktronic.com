@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>An idea for curbing WP7 piracy - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">An idea for curbing WP7 piracy</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2010-12-29T20:03:17">
+            Published on Wednesday, 29 December 2010 at 3:03 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Since it has been made <a href="http://www.wpcentral.com/windows-phone-marketplace-app-security-cracked-proof-of-concept-video">painfully obvious</a> that Windows Phone 7 application piracy is possible, at least for developer unlocked devices, it's about time I outlined a fairly simple idea I had a couple of months back about curbing such piracy for a significant subset of the WP7 apps out there.</p>
+<p>First, the tl;dr version is as follows: <strong>Microsoft should provide an API to get (or verify) app purchasers' anonymized Live IDs and/or Device Unique IDs.</strong></p>
+<p>Now, the explanation. Whenever a user purchases an app via the Marketplace, they must do so through their Live ID. Because their Live ID is associated to the app purchase, there should be a one-to-one relationship between a single app purchase and a Live ID. Assuming that the anonymized Live IDs (ANIDs) that are already available to app developers can be determined/calculated by Microsoft's services in the cloud, then all Microsoft has to do is expose an API that lets app developers check whether the current user's ANID is associated with a verified purchase.</p>
+<p>The reason I said earlier that this would apply to a subset of apps and not all of them is that such a validity check should only be performed server-side -- otherwise, an app that performs it locally can easily be cracked to NOP (ignore) the code performing this check. Because of this, only apps that rely on a cloud service would gain a significant benefit from doing ANID validity checking. And the reason I used the term &quot;significant&quot; is that Microsoft has already been pushing for more cloud functionality within apps, so the encouragement is already there to some extent.</p>
+<p>Finally, if ANIDs cannot be calculated by Microsoft outside of the phone, then the same idea would still apply to Device Unique IDs. Since a check is already being done to ensure that an app is not installed on more than five (I believe) devices associated with a single Live ID, Microsoft has to already be storing all active Device IDs per Live ID. Exposing an API to check for the validity of a Device ID based on its parent Live ID would provide the same benefit.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/16';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

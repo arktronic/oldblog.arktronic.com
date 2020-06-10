@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Home automation project, part I - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Home automation project, part I</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2009-11-02T21:51:46">
+            Published on Monday, 2 November 2009 at 4:51 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>I have wanted to do home automation for a number of years now, but various things prevented me from experimenting with it, not the least of them being me not owning a house. Now that I actually do own a house, I've been looking at home automation technologies more and more, trying to decide what I can do, what I should do, what is feasible to do, and so forth. This is the first of a series of posts that serve as containers for both my rationale for and progress with this project.</p>
+<p>The first issue I should address is, why am I doing this? To be perfectly honest, I don't <em>need</em> to automate anything in my house. However, there are many benefits to automating. The one most commonly cited is burglary prevention - that is, being able to turn on all the lights in the house at once with a single command. That's nice, but it's not a major concern for me. Here are some of the reasons I want to automate my house, not in any particular order:</p>
+<ul>
+<li>Geek factor - come on, everyone knows that this would be way cool</li>
+<li>Convenience - example: if I forgot to turn off the lights when I left the house, I can do it remotely</li>
+<li>Energy savings - being able to turn off all the lights and turn down the heating or AC when nobody's home would save a lot of electricity</li>
+</ul>
+<p>That brings us to the second issue - what features do I want in my system? Two of the above reasons bring about obvious feature requirements: remote (i.e., online) control, HVAC access, and light control. In addition to that, I want to have an integrated house monitoring system capable of detecting open windows/doors, movement, and potentially sound. Also, I would really like to control door locks, but that introduces a huge security issue that I have to take into account, so I may just have to postpone doing such a thing until later.</p>
+<p>Now, to list all the features as a... list.</p>
+<ul>
+<li>Remote (online, Bluetooth, etc) control</li>
+<li>HVAC access with heat pump control</li>
+<li>Light control - on/off and dimming when applicable</li>
+<li>Shade control - controlling blinds in the house</li>
+<li>Open door/window sensing</li>
+<li>Movement sensing</li>
+<li>OPTIONAL: Sound sensing</li>
+<li>Multi-room temperature sensing (not necessarily accurate enough for presence detection, just comfort)</li>
+<li>OPTIONAL: home theater control - at least on/off - without killing power at the wall socket</li>
+<li>OPTIONAL: door lock and/or garage control</li>
+</ul>
+<p>The above features can be broken down in a fairly clean way into hardware and software categories. In fact, pretty much the only category that isn't hardware is the first one - remote control. It's also the one posing the biggest challenge in terms of implementation. Almost everything else I can just buy and connect. However, since I have not found any reasonably-priced online home automation controllers, I will likely have to implement one myself.</p>
+<p>Another issue that must be discussed is underlying home automation technology. I have decided to go with Z-Wave after carefully evaluating my choices. Here's how I came to this decision. In the home automation market, there are powerline-based systems and wireless ones. While powerline technology offers more security than wireless, it is very susceptible to interference from, e.g., vacuum cleaners. In addition, the most popular powerline-based standard - X10 - is unreliable in that it doesn't communicate success or failure of commands, so you don't know whether your command reached its destination. Other standards, such as UPB and Insteon, fix certain X10 issues, but ultimately, they are all affected by noisy powerlines.</p>
+<p>On the wireless side, the most popular technologies are ZigBee and Z-Wave. ZigBee is based on IEEE 802.15.4, and is closer to an open standard than Z-Wave. However, there aren't that many products out there based on this technology, and those that are out are extremely expensive compared to their Z-Wave equivalents. I can see ZigBee eventually becoming popular and less expensive, but that won't happen for a while, so I can either wait an undetermined period of time, or just go with Z-Wave.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/7';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

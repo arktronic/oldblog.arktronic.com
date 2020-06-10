@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Virtual Hackintosh, part 2: the easy route - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Virtual Hackintosh, part 2: the easy route</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2016-12-12T01:15:00">
+            Published on Sunday, 11 December 2016 at 8:15 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>In <a href="/weblog/2016-12-10/virtual-hackintosh-part-1-the-concepts/">part 1</a> I explained some of the basic concepts behind the hackintosh. In this post I'll show the easy way to get a VirtualBox-based hackintosh system up and running.</p>
+<h2>Caveats</h2>
+<p>Although the steps in this post are relatively simple and straightforward, that simplicity comes with a price. There are at least two issues that will detract from the experience: available screen resolutions are limited, and iCloud/iMessage connectivity does not work.</p>
+<p>Aside from the above issues, there is also currently no way to have accelerated graphics in VirtualBox due to a lack of drivers, and there may be problems with audio as well. I've not figured out any way around that, unfortunately.</p>
+<h2>The guide</h2>
+<p>The instructions here work as of macOS Sierra 10.12.1 and VirtualBox 5.1.10. If you are using other versions, things may have changed, and so there is no guarantee that this guide will be accurate.</p>
+<h3>Step 0: Prerequisites</h3>
+<p>In order to follow this guide, you will need:</p>
+<ul>
+<li>An empty 16GB or higher flash drive or external hard drive</li>
+<li>A real Mac with plenty of free space and Internet access</li>
+<li>A VM host machine with VirtualBox installed and plenty of free space</li>
+</ul>
+<h3>Step 1: Create an installer disk</h3>
+<p>The first step in making a hackintosh is the creation of installation media. Start by downloading macOS Sierra from the App Store on your real Mac:</p>
+<p><img src="/assets/page-data/hackintosh-sierra-download.jpg" alt="Download Sierra" /></p>
+<p>You should see it in Applications after the download has completed:</p>
+<p><img src="/assets/page-data/hackintosh-sierra-in-applications.jpg" alt="Sierra in Applications" /></p>
+<p>Connect your external drive and use the Disk Utility to erase it, using the following settings:</p>
+<p><img src="/assets/page-data/hackintosh-erase-drive.jpg" alt="Erase drive" /></p>
+<p>You should leave the name &quot;Untitled&quot; as is, since it'll make the next step easier. And besides, it'll be overwritten in the next step anyway.</p>
+<p>Open a new Terminal window and enter the following:</p>
+<p><code>sudo /Applications/Install\ macOS\ Sierra.app/Contents/Resources/createinstallmedia --volume /Volumes/Untitled --applicationpath /Applications/Install\ macOS\ Sierra.app</code></p>
+<p>After entering your password and confirming the action, you'll need to wait while your drive is reformatted and macOS installer data is copied onto it. If you are using a slow USB flash drive, be prepared to wait.</p>
+<p>Once the process completes, eject the drive.</p>
+<h3>Step 2: Create the VM</h3>
+<p>Open VirtualBox and create a new VM:</p>
+<p><img src="/assets/page-data/hackintosh-vbox-create.jpg" alt="Create VM" /></p>
+<p>For simplicity, use the above settings. In later screens, select 4096MB RAM, and create a dynamically allocated 60GB VDI virtual hard drive.</p>
+<h3>Step 3: Configure the VM</h3>
+<p>Certain VirtualBox settings are easier to configure via the command line, and some are just unavailable in the GUI. The <code>VBoxManage</code> command line tool allows for terminal-based control over VMs.</p>
+<p><strong>IMPORTANT</strong>: Before using VBoxManage, close all VirtualBox windows! Otherwise, certain settings may fail to apply, or you might even end up with a corrupted VM.</p>
+<p>Enter the following commands to further configure the <code>macOS</code> VM, replacing <code>(copyrighted Apple key)</code> with the actual key that you can easily find online:</p>
+<pre><code>VBoxManage modifyvm macOS --vram 128 --usb on --usbehci off --usbxhci off
+
+VBoxManage setextradata macOS &quot;VBoxInternal/Devices/smc/0/Config/DeviceKey&quot; &quot;(copyrighted Apple key)&quot;
+</code></pre>
+<p>Next, choose a <a href="https://www.virtualbox.org/manual/ch03.html#efividmode">screen resolution</a> integer for the VM:</p>
+<ul>
+<li>0: 640x480</li>
+<li>1: 800x600</li>
+<li>2: 1024x768</li>
+<li>3: 1280x1024</li>
+<li>4: 1440x900</li>
+<li>5: 1920x1200</li>
+</ul>
+<p>Enable your selected resolution like so:</p>
+<pre><code>VBoxManage setextradata macOS &quot;VBoxInternal2/EfiGopMode&quot; 4
+</code></pre>
+<h3>Step 4: Connect your installer disk</h3>
+<p>This should be a simple step, but unfortunately VirtualBox makes it difficult. Although it is possible to connect USB devices to virtual machines, you cannot normally boot from them, and that is precisely what we need to do. Luckily, VirtualBox does provide a <a href="https://www.virtualbox.org/manual/ch09.html#rawdisk">workaround</a> for this via a virtual raw disk access file.</p>
+<p>First, connect your installer disk to your VM host machine. Next, you'll need to determine its identifier on your machine. In Windows, you can do so on the command line by entering the following:</p>
+<pre><code>wmic diskdrive list brief
+</code></pre>
+<p>In *nix, you can inspect the output from the <code>mount</code>, <code>df -h</code>, <code>lsblk</code>, or <code>parted -l</code> commands.</p>
+<p>Determine which disk represents your installer disk and remember its Windows DeviceID (usually in the format of <code>\\.\PHYSICALDRIVE#</code>) or *nix device name (usually in the format of <code>/dev/sdX</code> or <code>/dev/disk#</code>). It is important to note that you should use the name of the device itself and not of its partitions.</p>
+<p>Next, create the raw disk access file. In Windows, you will need to launch a new command prompt as Administrator. In *nix, you may need to prefix the command with <code>sudo</code>. Enter the following:</p>
+<pre><code>VBoxManage internalcommands createrawvmdk -filename C:\usb.vmdk -rawdisk \\.\PHYSICALDRIVE#
+</code></pre>
+<p>Replace the filename above with an appropriate *nix path if you're not on Windows, and replace the physical drive identifier as needed.</p>
+<p>In the same administrative command prompt, enter the following:</p>
+<pre><code>VBoxManage storageattach macOS --storagectl SATA --port 2 --type hdd --hotpluggable on --medium C:\usb.vmdk
+</code></pre>
+<p>Replace the filename above if necessary.</p>
+<h3>Step 5: Install macOS</h3>
+<p>Launch VirtualBox as Administrator in order to allow it to access the raw disk. Then, start the macOS VM. If VirtualBox asks to pick a startup disk or ISO, just cancel out of that dialog.</p>
+<p>Once macOS boots up, use the Disk Utility to format the 60GB disk and then install macOS onto it.</p>
+<p>After the installer completes, there will be a first run setup wizard. When prompted to sign in with your Apple ID, select &quot;Don't sign in&quot; since you won't be able to anyway. Also, when prompted to send diagnostics and usage data to Apple, uncheck that box. Since this isn't real Mac hardware, it would not be helpful for Apple to try diagnosing any issues from unsupported configurations.</p>
+<h3>Finishing up</h3>
+<p>Once macOS is up and running, you're effectively done. Congratulations!</p>
+<p><img src="/assets/page-data/hackintosh-running.jpg" alt="Running" /></p>
+<p>At this point, it's a good idea to shut down the VM, go to its storage settings, and remove the raw disk access VMDK file. You may want to remove it from VirtualBox's Virtual Media Manager as well.</p>
+<p>If you would like to see the normal Apple start up screen instead of the verbose text mode, you can enter the following <em>after</em> closing all VirtualBox windows:</p>
+<pre><code>VBoxManage setextradata macOS &quot;VBoxInternal2/EfiBootArgs&quot; &quot;usb=0x800 keepsyms=1 -serial=0x1&quot;
+</code></pre>
+<p>The default boot arguments contain &quot;-v&quot;, which enables verbose mode. The above command will overwrite those defaults to remove verbose mode.</p>
+<p>Finally, you will want to disable power saving. VirtualBox seems to dislike it when the guest OS tries to sleep. Go to System Preferences, select Energy Saver, and disable both the computer and the display from going to sleep in the guest OS.</p>
+<h2>Next time</h2>
+<p>In <a href="/weblog/2016-12-18/virtual-hackintosh-part-3-the-hard-route/">part 3</a>, I'll explain the more difficult route of creating a virtual hackintosh using Clover, which will allow for more screen resolutions and iCloud/iMessage connectivity.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2016-12-12T01:15:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

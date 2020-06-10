@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Home automation project, part III - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Home automation project, part III</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2009-11-10T15:22:46">
+            Published on Tuesday, 10 November 2009 at 10:22 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Although I'm not 100% done with the lamp topic from <em>Part II</em>, I think it's in a good enough state that I can move on to something else for now. The next topic is controlling window blinds, also known as an exercise in masochism. Existing solutions are obscenely expensive, starting around the $130 mark and going way past $500. I refuse to pay that much for automated window coverings. Luckily, there is an alternative.</p>
+<p>While I was researching this matter, I came across <a href="http://www.instructables.com/id/Build-A-Motorized-Window-Blinds-Controller-For-Les/">instructions</a> on DIY window blind control for as little as $15. Needless to say, I was intrigued. The procedure, however, is neither quick, nor does it address Z-Wave specifically. It probably wouldn't be hard to connect a Z-Wave relay to this setup. However, considering the fact that I'm not an electrical/electronics engineer and that these instructions themselves are not trivial to follow, I think it would be best if I just don't bother with automating window blinds at this time. That should save me quite a bit of sanity.</p>
+<p>Next on the list is sensing open doors and windows. I would want to do this with my front door, garage door, as well as fridge and freezer doors. Maybe I would monitor downstairs windows as well, but maybe not. For all of this, I can use the <a href="http://www.asihome.com/ASIshop/product_info.php?cPath=564_572&amp;products_id=3062">HRDS1</a> or the <a href="http://store.homeseer.com/store/HM-DW001---Z-Wave-Door-Sensor-Homemanageables-P763C57.aspx">HM-DW001</a>. Once again, the devices aren't cheap, but they serve a good purpose. I could actually build my own security system using these, coupled with motion sensors and cameras. Speaking of motion sensing, that's next on the list. The <a href="http://store.homeseer.com/store/HSM100---Z-Wave-Multi-Sensor-HomeSeer-P438C57.aspx">HSM100</a> appears to be an excellent device to get for motion sensing, temperature sensing, and light level sensing. Alternatively, I can use the <a href="http://www.asihome.com/ASIshop/product_info.php?cPath=564_572&amp;products_id=3959">ZIR000</a> or the <a href="http://www.asihome.com/ASIshop/product_info.php?cPath=564_572&amp;products_id=3064">HRMD1</a> just to sense movement.</p>
+<p>I'll skip sound sensing since I haven't found any pre-made devices that do it, and it's not important enough (at this time) to warrant further DIY research. Next is multi-room temperature sensing. The same HSM100 can be used for this purpose, or I could use the more specialized <a href="http://store.homeseer.com/store/HM-TS001---Z-Wave-Temperature-Humidity-Sensor-Homemanageables-P764C57.aspx">HM-TS001</a>, which has temperature as well as humidity sensing. It would be great to place a couple of these downstairs as well as upstairs so that I could see the temperature difference, and if it's too great, I can open or close some vents to equalize the temperature. And no, I have absolutely no intention of automating the opening or closing of vents.</p>
+<p>The next item on the list is home theater control. This is already mostly taken care of, as I recently purchased the Logitech <a href="http://www.amazon.com/dp/B001L1RSO8">Harmony 890</a>. I don't think I'll need to control my home theater setup remotely, so this solution should suffice. The last item on the list is door locks and garage control. Schlage is, as far as I know, the only company that's currently making Z-Wave door locks. However, they are rather expensive, and they require a monthly subscription to the Schlage Link online service (although <a href="http://www.micasaverde.com/">Mi Casa Verde</a> and <a href="http://www.homeseer.com/">HomeSeer</a> both have solutions that bypass this requirement). As for garage door control, Wayne-Dalton has a few products that let the garage door remote access Z-Wave scenes, but I haven't found anything that lets me open the garage door using Z-Wave. It would have to be as secure as the Schlage locks - using AES. However, the locks and garage door control are not very important to me at the moment, so I'll wait until there is more support for these products, and more products to choose from.</p>
+<p>That's the end of the list. The only thing left to discuss is the biggest challenge in this entire project - centralized control of all the Z-Wave devices. That will likely require multiple weblog posts, so I'll start on those later.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/9';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

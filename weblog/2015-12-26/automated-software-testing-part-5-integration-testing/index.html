@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Automated software testing, part 5: integration testing - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Automated software testing, part 5: integration testing</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2015-12-27T03:00:00">
+            Published on Saturday, 26 December 2015 at 10:00 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <nopreview>
+<p><em>Navigation: <a href="/weblog/2015-11-01/automated-software-testing-part-1-reasoning/">part 1</a> | <a href="/weblog/2015-11-02/automated-software-testing-part-2-the-types/">part 2</a> | <a href="/weblog/2015-11-09/automated-software-testing-part-3-unit-tests/">part 3</a> | <a href="/weblog/2015-12-02/automated-software-testing-part-4-unit-tests-and-test-doubles/">part 4</a> | part 5 | <a href="/weblog/2016-01-19/automated-software-testing-part-6-system-testing/">part 6</a></em></p>
+<hr />
+</nopreview>
+<p>As you will recall from <a href="/weblog/2015-12-02/automated-software-testing-part-4-unit-tests-and-test-doubles/">part 4</a>, we left off with a problem. All the unit tests for the <a href="http://js.codeit.live/js-testing-demo/?relativeTime2">relative time formatter v2</a> passed, but I explained that there was, in fact, a bug in how the day formatter was being called. The bug wasn't caught by the unit tests because of faulty assumptions made while writing the primary formatter &quot;class&quot; and its tests.</p>
+<h2>The purpose of integration testing</h2>
+<p>Although I created the aforementioned bug deliberately to show how unit tests alone aren't enough, it's very easy for such a bug to occur naturally during the development cycle. In more strictly-typed languages, a compiler error could have occurred if common interfaces were used to build the hour and day formatter stubs, and this exact scenario could be avoided. However, that wouldn't address the entire problem. An issue with call arguments is an issue of data flow from one unit to another. It could also manifest itself in more subtle ways, such as with improperly formatted strings or with unexpected nulls, and those bugs would not necessarily be highlighted by a compiler.</p>
+<p>Integration testing is how we can mitigate data flow issues. Instead of isolating every unit and testing it individually, we instantiate multiple units and test how they function together. This gives us confidence in our code at a higher level: it tells us that an entire section or functional area of the code is working as intended.</p>
+<h2>The tests</h2>
+<p>Let's take a look at an integration test for relative time formatter v2.</p>
+<p><strong><a href="http://js.codeit.live/js-testing-demo/?relativeTime2int">Relative time formatter v2 integration testing</a></strong></p>
+<p>The implementation portion in the above link is unchanged from the relative time formatter v2 implementation introduced in <a href="/weblog/2015-12-02/automated-software-testing-part-4-unit-tests-and-test-doubles/">part 4</a> - bug included. The tests, however, are quite different. You can see that we're still mocking out the current date, since the need for a stable and reproducible environment still exists, but instead of having separate suites testing each unit individually, there is a single integration suite whose setup function instantiates all three classes and passes the day and hour formatter instances to the primary formatter exactly as a real system would.</p>
+<p>If you run the tests, you'll see that the first two pass, while the second two fail, thus exposing the bug. Note that, while there were a lot of unit tests for these three classes, there are only four integration tests. This is by design. Integration testing is not intended to cover every possible scenario that could occur in the individual units. Its focus is on covering the major interactions between the units. Arguably, the integration suite could have only contained two tests - one for interacting with the hour formatter, and one for interacting with the day formatter. I chose to have two tests per formatter to verify that dates in the past and in the future are working as intended. I could see a possible desire to split those up into separate classes, so I figured that a couple of extra tests might help.</p>
+<p>Let's fix the implementation.</p>
+<p><strong><a href="http://js.codeit.live/js-testing-demo/?relativeTime2intfix">Relative time formatter v2 integration testing, with fix</a></strong></p>
+<p>The integration suite in the above link is identical to the one in the previous link, and the only change in the implementation is the call to the day formatter: <code>this.dayFormatter.format(now, target);</code>. Now the integration tests pass. However, if you were to run the previously created unit tests against this code, there would be failures in the primary formatter's test suite. Those unit tests would then need to be updated to work with the fixed primary formatter. Since no code was changed in the hour and day formatters, their respective unit tests don't need to be updated.</p>
+<h2>Cascading failures and improper fixes</h2>
+<p>The interplay between different types of automated software tests is such that a failure in one type (e.g., integration) will sometimes cause failures in other types (e.g., unit) after a fix is applied to correct the first failure. You must always be cautious when facing this situation, and you should pay close attention to the exact kinds of failures you're encountering and fixing. You may discover, for example, that after applying a fix for an integration failure, you end up with a failed unit test with a very specific defined scenario. If your fix broke that scenario, you have to determine whether the scenario was incorrect, or whether your fix has now broken something important, in which case you need to reconsider how - and where - to implement your fix.</p>
+<p>It's easy to get caught up in fixing one area of code and to not pay much attention to &quot;side effects&quot; of broken tests. If a test failed on an expectation of <code>True</code> for some value that now returns <code>False</code>, the way to make that test pass once again is clear. Unfortunately, simply changing the expectation is not always the correct course of action, as tempting as it may be.</p>
+<p>What you must do is examine two things: why there was a test for the value in question, and why that value changed. If the reason for the test isn't obvious and the description of the test or comments around the failed expectation don't yield useful information, then it's possible that the expectation is extraneous and could be removed. On the other hand, it could have been added hastily as part of a bug fix at some point in time. Version control systems can help pinpoint when the expectation was added, and it's often useful to see the entire changeset where this addition happened in order to see it in context and gain a greater understanding of the change as a whole.</p>
+<p>If you've determined that the reason for the expectation is valid, you must then figure out why the value has changed. If the change was a direct result of your fix, then perhaps the expectation needs to be updated, and if that's the case, you should make sure this change doesn't negatively impact code downstream and then update the expectation. However, if the expectation is still entirely correct, or if this change will introduce problems in other parts of the system, then your fix is likely improper.</p>
+<p>Unit and integration testing, used together, can be a powerful tool to help determine the viability of bug fixes as described above. In a complex system, an initial attempt at a bug fix may not always result in a viable solution due to unforeseen effects down the line. Writing good integration tests that encompass potentially obscure functionality will give you greater confidence that bug regressions in that area of code can be avoided.</p>
+<h2>Determining boundaries</h2>
+<p>It's important to define the boundaries in your integration tests before you write them. In the case of the relative time formatter v2, the primary formatter, the hour formatter, and the day formatter are being tested together. Everything else that happens to be a dependency, such as the clock, must still be replaced with a test double.</p>
+<p>Determining the boundaries is rarely an exact science, unfortunately. In the above example, all the units that we have form a distinct piece of functionality, the relative time formatter, so the boundaries are pretty obvious. In real-world projects, you'll often find similar sets of units that work together to accomplish a particular task. Those are good candidates for integration testing. In an <a href="https://en.wikipedia.org/wiki/Multitier_architecture">n-tier</a> application, you'll often want to test the interaction between tiers as well.</p>
+<p>Avoid creating integration tests that need to communicate with slow external systems such as databases, remote file systems, and web services. Creating a temporary in-memory database and using it in an integration test is perfectly fine, but if you need to communicate with a real instance of a remote database, you're introducing a complex, relatively slow, and potentially brittle dependency. Integration tests should be reasonably fast, and they should not fail just because some database instance on another server was down for maintenance.</p>
+<p>Most of the time you should also avoid creating integration tests that touch the UI. Those tend to get overly complicated and brittle when isolating the set of units you're trying to test. It's generally better to leave that to system testing, which will be covered in part 6.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2015-12-27T03:00:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

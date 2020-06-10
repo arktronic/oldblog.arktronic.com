@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>API design: adequate vs. awesome - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">API design: adequate vs. awesome</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2015-03-30T02:31:00">
+            Published on Sunday, 29 March 2015 at 10:31 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Inspired by a Twitter conversation regarding REST APIs, I wanted to better express my thoughts and feelings about API design (and I use the term API to not just mean REST API, but also frameworks and anything else that you might create that has some sort of interface for other developers to work with) in a format that allows for more than 140 characters per post. Let's get straight to the point. What makes an API good, bad, adequate, usable, unpleasant, or whatever other term you prefer that essentially still boils down to good or bad?</p>
+<h2>UX? For an API?</h2>
+<p>To say that the answer is &quot;UX&quot; might seem a little strange, since we don't generally think of developer-facing stuff as needing a facelift, but that really <em>is</em> the answer, in my opinion. The main difference is in who the &quot;U&quot; is in &quot;UX&quot; here. The developer is your user. So, UX in this instance could be called DX (not to be confused with 486DX).</p>
+<h2>But why?</h2>
+<p>Why would you want to design your API to be good, though? Isn't it enough to simply expose the functionality you're intending to expose, and then abandon the project and move on to the next thing? Some people/companies clearly think that is enough. However, I'm of the opinion that designing an API that is pleasant to use will develop goodwill between you/your company and your API users. If you're charging for this API, they'd be more willing to pay. If you're using it to show off your skills, they'd be more impressed. If you're doing it purely out of the goodness of your heart, then releasing a bad API would be a disservice to yourself, as you want to release something that people can use.</p>
+<h2>Introducing Some Random Developer</h2>
+<p>The biggest problem in designing a good API is being able to let go of all your innate knowledge of the underlying system and how all of its pieces fit together, and pretending to be Some Random Developer (or SRD for short) who has stumbled across your API in hopes of doing something useful with it. When SRD finds your API, what is the first thing they'll do? Probably try to determine whether your API is what they want in the first place. Does it seem to solve their problem? Is it available for their platform? Does it have licensing or cost restrictions? Making all of this information easily accessible makes SRD's life that much simpler.</p>
+<h2>Provide <em>good</em> examples</h2>
+<p>The next thing SRD will look for is examples of using your API to solve the exact problem they're trying to solve. Unless you're prescient, you won't be able to anticipate every SRD's problem, but that's all right. If you have lots of examples (that are well documented!) of various uses of your API, there's a good chance that SRD will either find the exact solution they need, or at least be able to extrapolate it from the multitude of examples you've provided.</p>
+<h2>Tedious, detailed documentation</h2>
+<p>After figuring out the API endpoints (or methods or interfaces or whatever they may be) that SRD needs to solve their problem, they'll want to see exactly how their data need to be sent in to your API and exactly what your API will output, down to the gory details such as encoding, headers, and any surprises that SRD might encounter while working with your API. This is all pretty tedious to document, and there are projects out there that strive to <a href="http://swagger.io/">make it easier</a>. They're slowly getting there, but I'm sure that not every kind of API can be auto-documented - at least not particularly well. However, creating this highly detailed documentation is extremely important to making a good API. If you put yourself in SRD's shoes, can you imagine how much time you can save when all of this information that you need is right at your fingertips?</p>
+<h2>Keep it updated</h2>
+<p>That brings us to another sticking point with documentation: keeping it accurate and up to date. <strong>I cannot stress enough just how important this is.</strong> If SRD finds that your documentation is inaccurate (whether that's due to it being outdated or not), then they will lose all trust in it. All of that potential for saved time is thrown out the window at that point, as SRD has to double-check everything that is documented to ensure that the behavior is exactly what the documentation claims it is.</p>
+<h2>Keep it consistent</h2>
+<p>After SRD is comfortable enough with your API, they'll want to write a quick proof-of-concept app. So now we come to the design itself. Since this post isn't specifically about REST APIs or language- or framework-specific libraries, I'll refrain from making overly concrete suggestions and instead focus on principles. The first principle is consistency. Whatever else you may do, make your API consistent. <em>(As an aside, this is where the Git CLI fails miserably.)</em> If your API is organized into logical sections and has consistent naming for everything, SRD's job becomes a lot easier. It is important to note that by &quot;logical&quot; I mean something that seems logical to SRD, being an outsider, and not necessarily to you. You must abstract internal implementation details away from SRD so that, no matter whether you've got any ugly hacks or bad architecture in your code, SRD only sees the pristine, carefully crafted API that makes sense at first glance. This consistency should extend to naming, modularization, accepted arguments, and return values.</p>
+<h2>Easy to use, hard to abuse</h2>
+<p>The second principle is fool-proofing. I don't mean to call SRD a fool, but when dealing with an unfamiliar API, it can sometimes be easy to use it wrong. <strong>You should take care to make it easy to use the API correctly and to make it hard to misuse it.</strong> For example, if your API returns IDs with certain objects, where such IDs are transient and can change at some point in time, you should strive to get rid of this potential &quot;gotcha&quot;. Instead of simply documenting it as an &quot;important detail&quot; and risking SRD skipping over that part of the docs, make your API avoid this functionality completely. Maybe you don't really need to return these transient IDs at all. Or maybe you can return something else instead of these IDs that is more permanent. The fewer &quot;gotchas&quot; your API has, the fewer headaches SRD will have, and the less time you'll spend troubleshooting &quot;foolish&quot; misuses of your API.</p>
+<h2>Versioning and compatibility</h2>
+<p>Speaking of fool-proofing, what about versioning and backward- and forward-compatibility? That's also something you have to take into account when creating a good API. There is no simple answer here, but in general you still want to make it easy to use your API correctly and difficult to misuse it. In the case of REST APIs, if you cannot guarantee backward-compatibility, you should find a way to ensure that older clients do not break when you introduce changes. Unfortunately, this often means that even the action of fixing an existing version of your API should be considered very carefully, as some clients may be relying on the <a href="https://technet.microsoft.com/en-us/magazine/2007.04.windowsconfidential.aspx">current buggy behavior</a>. Again with REST APIs, allowing access to the &quot;latest and greatest&quot; version through a special endpoint doesn't work well, and <a href="http://blog.wordnik.com/wordnik-api-has-gone-beta">it has been tried</a>. Wordnik found that it became very confusing both for internal developers and for API users, and gave up on that idea. In the case of libraries, SRD at least has the option of continuing to use an older version.</p>
+<h2>Sunsetting</h2>
+<p>Finally, you should never retire an API without giving public notice sufficiently in advance, to let SRD move off to something else. In the case of large organizations employing SRD, sufficient may mean as much as a year or more. But you can judge that for yourself. If your API is pretty popular, a longer deprecation time is generally warranted. This applies to both the retirement of entire API projects and to the retirement of mere versions of your API.</p>
+<p>To summarize this post, you should apply the <a href="http://en.wikipedia.org/wiki/Golden_Rule">Golden Rule</a> to the development of an API. Pretend that you are that mythical SRD. When you encounter an API that you might want to use, what would make your life easier when looking into that API? Would you appreciate excellent, accurate, in-depth documentation with plenty of examples? Would a consistent naming and data passing scheme appeal to you? Be willing to suffer a little pain and teduim in order to make all of your users suffer that much less. They'll thank you for it.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2015-03-30T02:30:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

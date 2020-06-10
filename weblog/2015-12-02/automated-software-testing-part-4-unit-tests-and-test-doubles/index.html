@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Automated software testing, part 4: unit tests and test doubles - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Automated software testing, part 4: unit tests and test doubles</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2015-12-03T03:30:00">
+            Published on Wednesday, 2 December 2015 at 10:30 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <nopreview>
+<p><em>Navigation: <a href="/weblog/2015-11-01/automated-software-testing-part-1-reasoning/">part 1</a> | <a href="/weblog/2015-11-02/automated-software-testing-part-2-the-types/">part 2</a> | <a href="/weblog/2015-11-09/automated-software-testing-part-3-unit-tests/">part 3</a> | part 4 | <a href="/weblog/2015-12-26/automated-software-testing-part-5-integration-testing/">part 5</a> | <a href="/weblog/2016-01-19/automated-software-testing-part-6-system-testing/">part 6</a></em></p>
+<hr />
+</nopreview>
+<p>In <a href="/weblog/2015-11-09/automated-software-testing-part-3-unit-tests/">part 3</a> I discussed some of the good habits surrounding unit testing, such as determining how much to cover in your tests and avoiding the temptation to test internal implementation details. In this part we'll continue to explore unit testing with a focus on verifying external interactions in a controlled and isolated environment.</p>
+<p>First, I'd like to clarify some terminology. When I'm talking about &quot;external interactions&quot;, I'm mostly referring to a unit interacting with another unit. Generally, this does <em>not</em> include a unit interacting with an underlying framework or language feature because most of the time that kind of interaction falls under the scope of &quot;internal implementation details&quot; and, as such, shouldn't matter to our tests.</p>
+<h2>Verify external interactions</h2>
+<p>In the last post, I showed how testing the outputs of a unit based on its inputs can work. An external interaction is just another type of input and/or output, so it's just as important to verify: units should be able to handle their respectively defined inputs and produce expected outputs, but you need to be certain of what those inputs and outputs actually are. While integration tests verify that multiple units are communicating correctly with each other, they are limited in two important ways: they cannot - and should not - see the exact data that flows between the units, and they cannot - and should not - cover all possible inter-unit communication scenarios. The second point there is especially important because it's easy to get stuck trying to create the &quot;perfect&quot; scenario where the data transforms and flows in just the right way to get to a very specific outcome, but that shouldn't be your focus when crafting integration tests. More on that in the next post.</p>
+<p>Both of the above limitations can be addressed to a sufficient extent with unit testing. Instead of instantiating real dependencies, a unit test should create <a href="http://martinfowler.com/articles/mocksArentStubs.html">test doubles</a> that sit in place of the real external units and act just enough like them that the unit you're testing doesn't know the difference. You're effectively isolating your unit, which allows you to verify the exact data that is input to and output from each unit. This gives you enough flexibility and control to cover primary interactions as well as edge case scenarios in regards to inputs and outputs.</p>
+<h2>Time formatting, revisited</h2>
+<p>It's time (no pun intended) to once again dive into some code and tests.</p>
+<p><strong><a href="http://js.codeit.live/js-testing-demo/?relativeTime2">Relative time formatter v2</a></strong></p>
+<p>The relative time formatter was first introduced in <a href="/weblog/2015-11-09/automated-software-testing-part-3-unit-tests/">part 3</a>. In this upgraded version, the single &quot;class&quot; has been split up into three different ones - the primary formatter, the hour formatter, and the day formatter. While the first version could only format days, this one can format hours as well. Getting the desired result string from the relative time formatter still consists of instantiating a <code>RelativeTimeFormatter</code> and calling its <code>format</code> function. What's different is that you now need to pass an instance of the hour formatter and an instance of the day formatter to the primary formatter's constructor. I should also mention that this isn't necessarily idiomatic JavaScript. The concepts demonstrated and discussed here are generic and applicable to many languages and frameworks, which means we can't take advantage of some of the inherent strengths unique to JavaScript.</p>
+<p>Looking at the test section, you'll notice that there are three test suites, since we now have three classes. If you click the run button, you'll see their outputs and that they all pass. The most interesting test to look at is the one that exercises the <code>RelativeTimeFormatter</code> itself. In addition to the mocked out clock that was discussed in the last post, it has an <code>hourFormatterStub</code> and a <code>dayFormatterStub</code>.</p>
+<h3>Setup, execution, verification</h3>
+<p>Let's look at the &quot;should format less than 8 hours in the future using the hour formatter&quot; test. After defining a couple of variables, we have the following line:</p>
+<pre><code>hourFormatterStub.and.returnValue(expectedValue);
+</code></pre>
+<p>This line configures the <code>hourFormatterStub</code> to return <code>expectedValue</code> whenever that stub is called. Since <code>expectedValue</code> is defined earlier in the test as a generic string (that happens to look very different from what the real formatter might return) we can check for it later in the test to verify that this string was returned to us from our stubbed out hour formatter via the real <code>RelativeTimeFormatter</code>. Naturally, this line of code must be executed before we try calling <code>RelativeTimeFormatter.format</code>, since it sets up required functionality on a dependency. Hence, it could be called a setup step.</p>
+<p>Once the necessary setup steps are taken, we call into our instance of the real <code>RelativeTimeFormatter</code>, and save the return value for later. This is the execution step.</p>
+<p>After calling the <code>format</code> function on our instance of the <code>RelativeTimeFormatter</code>, we have some <code>expect</code> lines, which check that the stub was called the correct number of times, that its invocations contained the expected arguments, and finally, that the <code>RelativeTimeFormatter</code> returned what it got from the <code>hourFormatterStub</code>. Collectively, these lines could be called the test's verification step.</p>
+<p>You may have noticed that the relative time formatter tests tend to conform to the setup-execution-verification structure. This is a pretty typical way to write unit tests that are more complex than a single-line return value verification test.</p>
+<h3>Refactoring tests</h3>
+<p>After writing your tests, you may notice that many of them have the same setup steps. That's a good indication that you should extract those steps into the <code>beforeEach</code> (or equivalent) of the test suite. Similarly, if common tear down steps are needed, those can go into <code>afterEach</code>. Such refactoring will simplify the tests, making them easier to read, modify, and debug. You can see how this common setup and tear down was done in the relative time formatter test suite. Common verification steps can also be refactored into separate functions that you call from your tests, but you should be careful with this, as it is entirely possible to over-optimize and make the tests more complicated instead of simplifying them.</p>
+<h3>An uncaught bug</h3>
+<p>Although all the tests pass, there is actually a major bug in the code of the new relative time formatter. The problem lies in the fact that the hour formatter and the day formatter take different arguments in their respective <code>format</code> functions: the hour formatter takes a single <code>diffValue</code> in milliseconds, while the day formatter takes <code>now</code> and <code>target</code> Date objects. Individually, these differences make sense, since the calculations that are performed are different between the hour formatter and the day formatter. However, the primary formatter that we've been testing with the hour and day formatter stubs isn't calling the day formatter correctly. We've assumed that the calls are identical and wrote the implementation as well as its tests with this faulty assumption in mind.</p>
+<p>The important takeaway here is that this is <em>not</em> strictly a unit testing problem. While it's true that the &quot;should format more than 8 hours [...] using the day formatter&quot; tests are flawed, as is the implementation that is being tested, this kind of mistake is easy to make. An act as innocent as copy-pasting the previous hour formatter tests and trivially modifying them to use the day formatter would cause this problem, and copy-pasting is done a lot more often in the software development world than we like to admit.</p>
+<p>The solution to the problem does not lie in disabling Ctrl-C and Ctrl-V. Rather, it is in testing the interactions between real units. This is integration testing, and it will catch such bugs. We'll discuss it in more detail in <a href="/weblog/2015-12-26/automated-software-testing-part-5-integration-testing/">part 5</a>.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2015-12-03T03:30:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

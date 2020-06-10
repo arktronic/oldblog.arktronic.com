@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Project PiNES - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Project PiNES</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2016-02-11T06:00:00">
+            Published on Thursday, 11 February 2016 at 1:00 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>There are quite a few projects out there that stuff a <a href="https://en.wikipedia.org/wiki/Raspberry_Pi">Raspberry Pi</a> inside a Nintendo Entertainment System case to be able to play emulated NES games. My friend <a href="https://twitter.com/Jaxidian">Shane</a> and I decided to do one of these projects. But we didn't want just another RPi emulation system. We wanted something a little more unique. So a plan was hatched to increase the nostalgia factor by not only interfacing with NES controllers, but also making use of NES cartridges.</p>
+<h2>The hardware</h2>
+<p>In order to use an RPi inside an NES console, we needed to figure out how to expose necessary connections - HDMI and power. So off to eBay we went and ordered some mountable connectors. Having decided not to touch the original NES connector locations due to space and cabling limitations, we opted for making new holes in the case, starting with templates:</p>
+<p><img src="/assets/page-data/pines-templates.jpg" alt="Hole templates" /></p>
+<p>We explored different options for hole locations, as well as the possibility of adding generic USB ports:</p>
+<p><img src="/assets/page-data/pines-routing-initial.jpg" alt="Initial cable routing" /></p>
+<p>The board sitting on top of the RPi is the <a href="http://blog.petrockblock.com/2014/12/29/controlblock-power-switch-and-io-for-the-raspberry-pi/">ControlBlock</a>, which we're using for both power management (to be able to safely power on and shut down the RPi) and for connecting the original NES controllers.</p>
+<p>After practicing cutting into some very melty plastic, we were relieved to discover that the NES case plastic wasn't nearly as melty and allowed for relatively painless drilling and filing. The results were satisfying:</p>
+<p><img src="/assets/page-data/pines-ports-initial.jpg" alt="Ports" /></p>
+<p>The connectors we got from eBay were then easily secured using screws:</p>
+<p><img src="/assets/page-data/pines-ports-completed.jpg" alt="Completed ports" /></p>
+<p>The vertical USB connector is used for power. We planned to add one or two USB data connectors that would have been horizontal, but that didn't get into version 1 of Project PiNES.</p>
+<p>Once everything was hooked up, we tested the system:</p>
+<p><img src="/assets/page-data/pines-test.jpg" alt="Test" /></p>
+<p>I mentioned earlier that we wanted to make use of NES cartridges. Since both console and cartridge pins are often worn down and unreliable, we decided to come up with an alternate way of using the cartridges. As can be seen in the above photo, there is an NFC reader (another eBay purchase) in the middle of the NES. We opened a couple of the NES cartridges we have and put NFC stickers inside them. I wrote some Python code to interface with the NFC reader and simply run the game ROM file name that is written to the NFC sticker.</p>
+<p>This is what the whole thing looks like inside:</p>
+<p><img src="/assets/page-data/pines-routing-completed.jpg" alt="Completed cable routing" /></p>
+<p>And here it is assembled, with an opened cartridge that has an NFC sticker placed inside:</p>
+<p><img src="/assets/page-data/pines-assembled.jpg" alt="Assembled" /></p>
+<h2>The software</h2>
+<p>The Raspberry Pi 2 Model B inside the NES is running Arch Linux, tweaked to minimize boot time. The emulation software is <a href="http://www.libretro.com/">RetroArch</a>. However, instead of using the &quot;standard&quot; front-ends like EmulationStation, I wrote a custom one. It's designed specifically to have a &quot;retro&quot; look and feel, and it's relatively lightweight. You can see it in action here:</p>
+<iframe width="780" height="440" src="https://www.youtube.com/embed/JTtkKQAr3a8" frameborder="0" allowfullscreen></iframe>
+<p>The custom front-end was written using <a href="http://www.pygame.org/">pygame</a> and, since this is my first real attempt at a Python project, I'm not exactly proud of how the code looks. It does its job, though.</p>
+<h2>The future</h2>
+<p>We may add to this project some day if we find the time and motivation. Those USB data ports would be nice and, since they would allow for USB controllers with more buttons to be connected, more advanced game consoles could be emulated. Or maybe next time we'll upgrade to an SNES case!</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2016-02-11T06:00:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

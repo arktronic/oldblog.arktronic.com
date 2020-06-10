@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>A redone blog, again - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">A redone blog, again</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2018-12-28T22:20:00">
+            Published on Friday, 28 December 2018 at 5:20 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>I'm just about due for another recreation of my blog, so here we are. <a href="/weblog/2014-08-09/new-blog-and-new-tea/">Last time</a>, I switched from a CMS to a statically generated website, using my own static site generator. This time, I'm taking it a step further and, in addition to recreating my static site generator in .NET Core, harnessing the power of GitHub Actions for <a href="https://en.wikipedia.org/wiki/CI/CD">CI/CD</a> purposes, and I'm using GitHub Pages for hosting.</p>
+<p>My new static site generator isn't ready for a proper first release yet, so I won't talk much about it at this point. Instead, I'll focus on how I'm using GitHub Actions to deploy blog changes to my staging blog and my production blog. First things first: GitHub Actions is currently in beta. I wouldn't be surprised if it goes through a lot of changes before it's released fully. While the beta is mostly functional, it has a number of limitations and bugs. That's beta software for you. <strong>What I'm trying to get at is, the things I'm going to describe below might not be applicable by the time this feature is out of beta.</strong></p>
+<p>The idea behind GitHub Actions is relatively straightforward: you configure &quot;actions&quot;, which are simply Docker containers, to do stuff for you. During the public beta, the only available trigger for these actions is a push. That's good enough for my purposes with this blog. Having never really worked with Docker before, I'm probably doing a lot of stuff in a suboptimal manner, but it works, so there's that. I've got two sections in my GitHub Actions workflow file: the staging section, and the production section. They are very similar, with just a few changes to point to different repos and such.</p>
+<p>Each section has two actions: a filter and a &quot;do all the things&quot; action. The filter simply ensures that the main action only executes when something is pushed to the correct branch - it's a branch filter. The setup for it looks like this:</p>
+<pre><code>    action &quot;Filter to master branch&quot; {
+        uses = &quot;actions/bin/filter@b2bea07&quot;
+        args = &quot;branch master&quot;
+    }
+</code></pre>
+<p>The <code>uses</code> directive says that <a href="https://github.com/actions/bin/tree/b2bea0749eed6beb495a8fa194c071847af60ea1/filter">this version of the Filter action</a> should be used, with <code>args</code> telling the Filter action that I want the branch name to match &quot;master&quot;.</p>
+<p>The &quot;do all the things&quot; action is where it gets weird. I didn't want to publish my own GitHub Action for building a static site using my generator for a few reasons. First, as I mentioned earlier, my generator isn't ready yet. Second, I was having trouble finding the right documentation for precisely how to publish a GitHub Action, what the necessary components are, and how everything works together. And third, I fully expect the publishing process and requirements to change during the beta period, and I'm not overly interested in keeping up with all of these changes at the moment. So, I chose to do this in a bit of a backwards way. I decided to use the Docker CLI GitHub Action to build a Docker image that just happens to perform all the steps I want during the build. It's mildly horrifying, but here's what it currently looks like:</p>
+<pre><code>    action &quot;Docker-Staging&quot; {
+        uses = &quot;actions/docker/cli@76ff57a&quot;
+        needs = [&quot;Filter to master branch&quot;]
+        args = &quot;build --build-arg GITHUB_TOKEN --build-arg GH_SOURCE_REPO=\&quot;arktronic/arktronic.com--source\&quot; --build-arg GH_SOURCE_BRANCH=\&quot;master\&quot; --build-arg GH_DEST_REPO=\&quot;arktronic/staging.arktronic.com\&quot; --build-arg GH_DEST_DEPLOY_KEY --build-arg GH_CNAME=\&quot;staging.arktronic.com\&quot; --build-arg ACCEPT_RISK=\&quot;1\&quot; .github/main_support&quot;
+        secrets = [&quot;GITHUB_TOKEN&quot;, &quot;GH_DEST_DEPLOY_KEY&quot;]
+    }
+</code></pre>
+<p>Let's dissect that mess. First, we have the familiar <code>uses</code> directive for <a href="https://github.com/actions/docker/tree/76ff57a6c3d817840574a98950b0c7bc4e8a13a8/cli">this action</a>. The <code>needs</code> directive helps to set up the chain of actions in my workflow. The <code>secrets</code> directive tells GitHub which secret environment variables to make available to this action (there is a new tab in GitHub repo settings that lets you manage these secrets). Finally, <code>args</code> is the messy part here. It's mostly build arguments, so if you ignore those, you're left with <code>build .github/main_support</code>. That's not so bad. It's just telling Docker to use the Dockerfile located in the specified relative path. The Dockerfile located in <code>.github/main_support</code> looks like this:</p>
+<pre><code>    FROM microsoft/dotnet:2.1-sdk
+
+    ARG GITHUB_TOKEN
+    ENV GITHUB_TOKEN=$GITHUB_TOKEN
+    ARG GH_SOURCE_REPO
+    ENV GH_SOURCE_REPO=$GH_SOURCE_REPO
+    ARG GH_SOURCE_BRANCH
+    ENV GH_SOURCE_BRANCH=$GH_SOURCE_BRANCH
+    ARG GH_DEST_REPO
+    ENV GH_DEST_REPO=$GH_DEST_REPO
+    ARG GH_DEST_DEPLOY_KEY
+    ENV GH_DEST_DEPLOY_KEY=$GH_DEST_DEPLOY_KEY
+    ARG GH_PROD_DEPLOY_KEY
+    ENV GH_PROD_DEPLOY_KEY=$GH_PROD_DEPLOY_KEY
+    ARG GH_CNAME
+    ENV GH_CNAME=$GH_CNAME
+    ARG ACCEPT_RISK
+    ENV ACCEPT_RISK=$ACCEPT_RISK
+
+    COPY &quot;entrypoint.sh&quot; &quot;/entrypoint.sh&quot;
+    RUN /entrypoint.sh
+</code></pre>
+<p>As you can see, I'm using Microsoft's .NET Core 2.1 SDK Docker image to build and run my static site generator. After that, there are a whole bunch of <code>ARG</code> and <code>ENV</code> directives, which take all those <code>--build-arg</code> arguments from the GitHub Actions workflow and transform them into environment variables that are available to the container. Finally, a single shell script is copied into the container and then executed. That shell script is where most of the magic happens:</p>
+<pre><code>    #!/bin/bash
+
+    set -e
+
+    cd /srv
+    mkdir ~/.ssh
+    echo -e &quot;$GH_DEST_DEPLOY_KEY&quot; &gt;&gt; ~/.ssh/id_rsa 2&gt;/dev/null
+    echo -e &quot;$GH_PROD_DEPLOY_KEY&quot; &gt;&gt; ~/.ssh/id_rsa 2&gt;/dev/null
+    chmod 600 ~/.ssh/id_rsa
+    ssh-keyscan -t rsa github.com &gt; ~/.ssh/known_hosts 2&gt;/dev/null
+
+    if [ &quot;$ACCEPT_RISK&quot; == &quot;1&quot; ]; then
+    echo &quot;Risk accepted - will force push!&quot; &gt;&amp;2
+    export PUSH_PARAMS=&quot;-f&quot;
+    else
+    echo &quot;Risk not accepted - will perform dry run.&quot; &gt;&amp;2
+    export PUSH_PARAMS=&quot;-n -f&quot;
+    fi
+
+    git config --global user.name &quot;BuildBot&quot;
+    git config --global user.email &quot;noreply@example.com&quot;
+
+    git clone https://github.com/arktronic/genmaicha.git /srv/genmaicha
+    dotnet publish -c Release -o /srv/genmaicha/publish /srv/genmaicha/Genmaicha/Genmaicha.csproj
+
+    echo &quot;Shallow cloning $GH_SOURCE_REPO, branch $GH_SOURCE_BRANCH&quot;
+    git clone --depth 1 --branch $GH_SOURCE_BRANCH https://$GITHUB_TOKEN@github.com/$GH_SOURCE_REPO.git input &amp;&gt;/dev/null
+    dotnet genmaicha/publish/genmaicha.dll -o input/
+
+    cd input/_build
+    echo $GH_CNAME &gt;CNAME
+    git init
+    git checkout -b master
+    git add -A
+    git commit -m &quot;Recreate GitHub Pages&quot;
+    git remote add origin git@github.com:$GH_DEST_REPO.git
+    echo &quot;Pushing to $GH_DEST_REPO with params '$PUSH_PARAMS'&quot;
+    git push $PUSH_PARAMS origin master
+
+    echo Done
+</code></pre>
+<p>The <code>set -e</code> line tells Bash to stop executing the script after the first time it encounters a non-zero exit code, i.e., after the first error. This is important because otherwise we could potentially end up deploying something invalid.</p>
+<p>The next few lines set up SSH. There are two lines that try to throw a private key into <code>~/.ssh/id_rsa</code>, but realistically, only one of them should succeed, since the workflow is set up to provide either the staging one or the production one - not both. That file then needs its permissions adjusted because SSH doesn't like it when private keys are world-readable. Go figure. And finally, in order to have SSH trust GitHub, its public key is retrieved and pushed to the <code>known_hosts</code> file.</p>
+<p>After setting up SSH, I've got some risk avoidance code, which will either let Git force push, or merely perform a dry run (<code>-n</code>). Better safe than sorry. And then the local Git user info is set up for the eventual commit that will be created and force pushed.</p>
+<p>Building my static site generator just takes a couple of lines: cloning its repo, and executing <code>dotnet publish</code> on it. After that, the blog source code is shallow cloned and then processed by the newly-built generator, with the output going into the <code>_build</code> directory.</p>
+<p>Finally, a new Git repo is created in the <code>_build</code> directory, everything is committed, and the contents are then force pushed to the target repo, which should already be set up to use GitHub Pages for hosting.</p>
+<p>All of this code (and, incidentally, this blog post) is currently located <a href="https://github.com/arktronic/arktronic.com--source">here</a>. Feel free to take a look at it. And I would definitely recommend for people to check out GitHub Actions because it's an extremely powerful tool, which can be utilized for many useful purposes.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2018-12-28T22:20:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

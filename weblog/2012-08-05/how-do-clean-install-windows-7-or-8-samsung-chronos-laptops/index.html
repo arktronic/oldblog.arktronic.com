@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>How to do a clean install of Windows 7 or 8 on Samsung Chronos laptops - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">How to do a clean install of Windows 7 or 8 on Samsung Chronos laptops</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2012-08-06T01:04:26">
+            Published on Sunday, 5 August 2012 at 9:04 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>First, some background. I've got a new Samsung Series 7 NP700Z3A-S06US notebook (that name just rolls off the tongue, doesn't it?) and the first thing I always do when I get a new computer that I didn't build myself is wipe everything off the hard drive(s) and install the operating system from scratch. This applies even to the &quot;Microsoft Signature&quot; computers, which are supposed to be bloatware-free, but still contain too much unnecessary stuff for my taste. So, when I looked over the installed software on this machine, I decided that I might as well do my usual thing and wipe it. That's where trouble struck.</p>
+<p>This particular notebook computer, as well as similar Samsung models, contains an 8GB SSD (in addition to the 1TB HDD) that is used as a cache to speed up Windows and apps. Samsung uses Diskeeper's ExpressCache software for that purpose. Unfortunately, this SSD causes a rather large problem for the Windows installer. For whatever reason, Windows refuses to install its little &quot;System Reserved&quot; partition on the HDD, downright refusing to proceed with the installation if the SSD is already partitioned for ExpressCache. Once I discovered this, the only choice I had at that point was to repartition the SSD and let Windows install itself. However, things weren't that simple. After the Windows installer rebooted, the notebook went into a boot loop. I've never seen an x86-based computer do that before. I've seen many a boot error message, but never a boot loop. It appears that the BIOS really doesn't want to boot off the SSD, which is where Windows decided to install its boot partition. I had to figure out where to go from there - how to get the HDD into a state where both Windows and Samsung's BIOS were happy, and the SSD free for ExpressCache use.</p>
+<p><em>Aside: I had some hardware-related trouble with this notebook, and in the process of trying to get it repaired discovered that removing or replacing the hard drive voids the warranty. I think that's idiotic. I had to wipe the HDD before sending the notebook in because it had sensitive data on it, instead of just removing the HDD.</em></p>
+<p><strong>WARNING: The following steps involve dangerous commands that delete lots and lots of data. I'm not responsible if you delete your precious memories. Only you are responsible.</strong></p>
+<p>Here are the approximate steps I took to get everything working again:</p>
+<ol>
+<li>Boot off the Windows DVD or USB installation media</li>
+<li>Choose the &quot;Repair&quot; option, and the command prompt afterwards (the way to get there is different between Windows 7 and 8)</li>
+<li>Type in <strong>diskpart</strong> to get into the partition tool</li>
+<li>Use the commands <strong>list disk</strong> and <strong>list part</strong> to determine which disk is what. For me, Disk 0 was the HDD and Disk 1 was the SSD. The following instructions assume this</li>
+<li>Select the HDD: <strong>sel disk 0</strong></li>
+<li>Delete all partitions on it: <strong>clean</strong></li>
+<li>Create a 100MB partition for Windows 7 (change to 350MB for Windows 8): <strong>create part primary size=100</strong> (or <strong>size=350</strong>)</li>
+<li>Format it: <strong>format fs=ntfs quick</strong></li>
+<li>Assign it a letter: <strong>assign letter=f</strong> (if F: is in use, pick another one. Use <strong>list vol</strong> to see all volumes and their letters)</li>
+<li>Create a partition that fills the rest of the disk: <strong>create part primary</strong></li>
+<li>Format it and assign it letter &quot;C&quot;, as above</li>
+<li>Reboot back into the Windows installation media and install Windows into the large partition that was just created</li>
+<li>Again, reboot into the Windows installation media and go into the repair command prompt</li>
+<li>Use diskpart's <strong>list vol</strong> and <strong>assign</strong> commands to ensure that both the boot partition (F:) and the Windows partition (C:) still have drive letters</li>
+<li>Select the boot partition (<strong>sel part 1</strong>) and mark it as active: <strong>active</strong></li>
+<li>Exit diskpart and type in: <strong>bcdboot c:\windows /s f:</strong></li>
+<li>Reboot and you should be good to go!</li>
+</ol>
+<p>After booting into Windows, you should be able to safely repartition the SSD to ExpressCache's liking, without killing Windows.</p>
+<p>So who is to blame for this foolishness - Samsung or Microsoft? Yes. They are both to blame. Samsung should not have screwed up the system configuration to the point that using the standard Windows installer causes such problems, and Microsoft should not have made the installer so damned picky about which partitions must reside in which disks and in what order.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/27';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

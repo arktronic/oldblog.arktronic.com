@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Virtual Hackintosh, part 1: the concepts - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Virtual Hackintosh, part 1: the concepts</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2016-12-10T17:35:00">
+            Published on Saturday, 10 December 2016 at 12:35 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Virtualization powers a lot of infrastructure today, and there have been countless advances made in this field during the last few years. CPUs support more and more advanced hypervisor scenarios, while operating systems gain better and better native virtualization capabilities. Today, even macOS is virtualizable to a significant degree using free, open source tools.</p>
+<p>In this post, as well as parts <a href="/weblog/2016-12-11/virtual-hackintosh-part-2-the-easy-route/">2</a> and <a href="/weblog/2016-12-18/virtual-hackintosh-part-3-the-hard-route/">3</a>, I'll be focusing on using VirtualBox as the VM host, because it is open source, cross-platform, and it generally works well for this purpose. There are ways to get VMware and QEMU/KVM to host macOS; if you're already in one of those ecosystems, you should be able to find an online guide to help. I'm unaware of any successful attempts at getting Hyper-V to host it, but it could conceivably be done.</p>
+<h2>Motivation</h2>
+<p>The only reason why I decided to attempt virtualizing macOS is because it sounded like an interesting challenge. I have no particular desire to use that operating system, but finding a way to get it working is intriguing to me.</p>
+<h2>The theory and the terminology</h2>
+<p>If you're new to the hackintosh scene, you might feel a bit overwhelmed with jargon: DSDT, Clover, kext, Chameleon, SMC, and so forth. Let's start with macOS hardware requirements and go from there. <em>Disclaimer: I can't guarantee the accuracy of the information provided here. This is just my attempt to reconcile the various pieces of info floating around on the web. If something is incorrect, please let me know, and I'll fix it.</em></p>
+<h3>Hardware requirements</h3>
+<p>Over the years Apple has released quite a few devices that run modern versions of macOS. They all have a couple of things in common: they run on Intel CPUs, and they have specialized hardware to differentiate a Mac from a regular Intel-based machine.</p>
+<p>This brings us to the first term: <strong>SMC (System Management Controller)</strong>. The SMC has multiple functions, including controlling LEDs and power management, but for our purposes it only has one interesting function: identifying the hardware that it's running on as a genuine Mac. macOS checks the SMC for a specific string upon booting up, and if the string is missing or corrupted, it will crash with a kernel panic.</p>
+<p>This string check is done using an aptly-named <strong>kext (kernel extension)</strong> called <code>Dont_Steal_Mac_OS_X</code>. A kernel extension is effectively a dynamically loadable kernel module - code running with very high privileges inside kernel space. There are kexts that function as hardware drivers, for example.</p>
+<p>Macs have other common hardware found in many non-Mac machines, such as audio cards, graphics cards, wireless NICs, and so on. Since Apple only has to support a limited number of these devices, it can sometimes be a challenge to get certain functionality working on unsupported hardware. Custom kexts are often the solution.</p>
+<p>In order to determine what hardware is present, macOS enlists the help of Intel's <strong>EFI (Extensible Firmware Interface)</strong>, a modern replacement for the venerable <strong>BIOS (Basic Input/Output System)</strong> firmware, which dates back to the 1970s. In addition to allowing macOS to boot, EFI contains (or allows access to) a lot of metadata in various tables that macOS uses to look up what hardware it needs to initialize. One of these sets of tables is the <strong>SMBIOS (System Management BIOS)</strong>. It contains information about the currently running firmware, as well as metadata about the motherboard and certain peripherals that are attached to it. For example, macOS uses SMBIOS information to determine how much RAM the computer has and which RAM slot(s) are occupied.</p>
+<p>EFI also allows access to various parts of <strong>ACPI (Advanced Configuration and Power Interface)</strong>, which has more information about the computer. Part of ACPI is the <strong>DSDT (Differentiated System Description Table)</strong>, which contains system metadata as well as executable code to allow for correct functionality of the operating system, especially when it comes to things like power management.</p>
+<h3>Software solutions</h3>
+<p>On a real Mac, the EFI, SMBIOS, ACPI tables, and various other firmware components are all tuned for best compatibility with macOS. On regular machines, they tend to be tuned for compatibility with Windows, or sometimes not tuned at all, or even tuned incorrectly. In order to solve the various issues created by these incompatibilities, a custom bootloader can be used to tweak the firmware information that macOS sees. <strong>Chameleon</strong> is one such bootloader. <strong>Clover</strong> is another. I'll be focusing on Clover in these posts, as it is the current preferred bootloader in the hackintosh community.</p>
+<p>Clover functions as an EFI emulator, presenting its customizable view of the computer, including all of the aforementioned tables and other firmware components, to the operating system that it boots. It's able to function within an existing EFI or UEFI environment, as well as within a legacy BIOS one.</p>
+<p>The successful creation of a hackintosh essentially boils down to correctly configuring Clover. Although there is sometimes a need for custom kexts to enable more or better functionality of various components, that is generally not needed for basic operation. Custom DSDT modifications, which are presented by Clover to the operating system, will often solve many problems ranging from graphics card initialization to power management, and a lot more.</p>
+<p>Configuring a virtual hackintosh is similar to configuring a physical one, with an important difference in that the emulated hardware is nearly identical across most machines. Pretty much the only hardware that is not the same is the CPU, and there are workarounds to address CPU-specific issues.</p>
+<h2>Next steps</h2>
+<p>In the <a href="/weblog/2016-12-11/virtual-hackintosh-part-2-the-easy-route/">next part</a>, I'll explain the easy, though limited, route to creating a virtual hackintosh. In the <a href="/weblog/2016-12-18/virtual-hackintosh-part-3-the-hard-route/">third part</a>, I'll explain the more difficult, though more functional, route. Stay tuned!</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2016-12-10T17:35:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

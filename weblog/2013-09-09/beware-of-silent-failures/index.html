@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Beware of silent failures - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Beware of silent failures</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2013-09-09T04:37:17">
+            Published on Monday, 9 September 2013 at 12:37 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>What's worse than experiencing a failure in a production system? I'll tell you: not knowing that it occurred.</p>
+<p>I was inspired to write this post after seeing a neat presentation at work about a new internal tool at the office. One fact that jumped out at me during the presentation was that, if a failure occurred while running a periodic background task, an email would be fired off informing the admin(s) of this problem. On the surface, that seems like a reasonable action to take; be silent unless something's wrong.</p>
+<p>But there's a fundamental flaw in this concept. If something does indeed go wrong, how can you be sure that email will still function? Or to say this in a more generic manner, if a failure occurs, how can you be sure that a push-based notification of this failure can still happen? The answer, of course, is that you can't. And that's why you shouldn't do it.</p>
+<p>So, what options are there? Fundamentally, you can do two things to verify the correct functionality of your system. The first thing you can do is push success notifications, in addition to or instead of failure ones. In the particular example of the internal tool, it could send out an email every time the periodic task completed successfully. Or every 30th time it completed successfully if it runs often. The point here is to let the admin(s) know that the system is working as expected. If suddenly the emails stop or begin reporting failures (e.g., &quot;Tasks ran; 2 of 30 failed&quot;) then appropriate actions can be taken to remedy the situation.</p>
+<p>But what if you don't want to spam your admin(s) with useless status reports that they'll just ignore anyway? Well, it should be part of their job to monitor this stuff, so don't be afraid to do it! Alternatively, you could use a pull-based approach to this problem. If you have an external monitoring solution set up, use it to get status reports from your system. You can have your system publish a report of its background activities on a special URL or a shared network location and then have your external monitoring solution periodically check that report for problems. For websites, this could even be achieved by using uptime monitoring services like <a href="http://www.uptimerobot.com/">Uptime Robot</a>. You can have a special reporting URL show its status (as simple as &quot;OK&quot; or &quot;ERROR&quot;) based on dynamic determination of whether any failures occurred as well as whether the periodic activities actually ran. Then the uptime monitoring service can check for keywords (like &quot;OK&quot;) in the reporting page's contents to verify proper functionality or alert you should the keywords fail to match.</p>
+<p>Of course, if you have your own separate monitoring solution, you'll need to ensure that that solution itself is continuing to function properly. Yes, what I'm getting at is that at some point you should still have periodic success notifications for certain critical services. After all, if your monitoring solution stops being able to alert you, that'd be a major cause for concern.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/37';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

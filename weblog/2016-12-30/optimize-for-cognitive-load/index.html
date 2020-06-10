@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Optimize for cognitive load - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Optimize for cognitive load</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2016-12-30T16:25:00">
+            Published on Friday, 30 December 2016 at 11:25 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>I recently read a rather interesting post by Martin Fowler regarding <a href="http://martinfowler.com/bliki/FunctionLength.html">function length</a>, where he suggested that very small functions that encompass the implementation for a single intention are ideal. I have a somewhat different view of this argument, which also happens to touch on larger concerns of software design and even, to a certain extent, architecture. It is a holistic view, in the sense that the same goal is desired at multiple levels, from the function to the entire system.</p>
+<p>Specifically, I argue that instead of optimizing for specific low-level ideals such as function length, implementation vs. intention, dogmatic adherence to patterns or practices and so on, we should optimize for cognitive load. Let me start by explaining the general concept of cognitive load and how I interpret it.</p>
+<h2>Cognitive Load Theory</h2>
+<p><a href="https://en.wikipedia.org/wiki/Cognitive_load">Cognitive Load Theory (CLT)</a> was developed by John Sweller, an Australian professor specializing in educational psychology. According to CLT, when humans are learning, there are three types of cognitive load that occur: intrinsic, extraneous, and germane. Intrinsic cognitive load is effectively the difficulty that the topic being learned presents by itself. Not much can be done to affect that if the topic is to be learned. Extraneous cognitive load is, as the name suggests, considered unnecessary. It is created by the manner in which information is presented. For example, the extraneous cognitive load would be much higher if I were to verbally describe a geometric shape like a square, rather than just show a picture of one. Finally, germane cognitive load is involved in processing and construction of <a href="https://en.wikipedia.org/wiki/Schema_(psychology)">schemata</a>. In the context of cognitive science, a schema is basically a grouping of learned information or a common pattern of processing such information.</p>
+<p>The idea of <a href="https://www.nngroup.com/articles/minimize-cognitive-load/">applying CLT to UX</a> has been growing in popularity in recent years. Numerous articles have been written about optimizing visual and interaction design to reduce extraneous cognitive load. Unfortunately, I've not seen much talk about this in regards to software design or architecture. It seems, we software engineers tend to focus more on the technical and less on the human side. But we need to take both into account when working on real (i.e., not personal/toy) projects if we want to increase maintainability and ease of development.</p>
+<h2>Application of CLT</h2>
+<p>My interpretation of cognitive load as it applies to software design is rooted in how many steps you must go through to understand the code involved in executing an API call, a workflow, a use case. This is, of course, a multifaceted problem with no clear generic solution. In most situations, in order to understand a particular flow to a <em>sufficient degree</em>, you don't need to know all the minutiae involved in it. For example, if you're working on a RESTful API, you rarely (hopefully never) need to debug down to the level of TCP connections or Ethernet frames. Often, you don't even need to know the exact processes your framework of choice uses to translate an HTTP request to an appropriate function call in your code. And, depending on what aspect of the codebase you're trying to understand, you can often skip other important code in order to focus on what currently matters to you.</p>
+<h3>Functions</h3>
+<p>So how does all this affect software design? Let's start with function length and go up from there. From a CLT perspective, a very long function that encompasses a significant amount of data processing will have high extraneous cognitive load when you analyze it because it will likely deal with multiple states that you have to keep in mind at all times while mentally processing the various permutations of conditionals and loops, what happens inside each of them, and how those previous decisions affect further conditionals and loops later on. This is a lot of information to keep track of, and so is inefficient for us to process.</p>
+<p>At the same time, very small functions will also have high extraneous cognitive load. The above load of dealing with state is replaced with the load of incessant context switching when you have to look at many different functions, then back again down a stack, then forward again from the next step, and so forth. This causes the same problem of presenting too much information to keep track of, and so is still inefficient.</p>
+<p>The ideal function length is somewhere inbetween. I hesitate to give concrete numbers, since there are multiple conflicting models of human <a href="https://en.wikipedia.org/wiki/Working_memory">working memory</a>, which have different implications for how many items we can hold in our minds while working on a problem. Instead, I'd suggest that you rely on your intuition to help determine the right balance. Look at examples of very long functions and of sets of very short ones, and try to analyze the flow through them. Seeing the issues with both by looking at examples at each extreme will help you to find a balance.</p>
+<p>Of course, there are other factors that play into your ability to analyze code. Descriptive function names, for example, are very important, as is a well thought out hierarchical (class/file/project) separation.</p>
+<h3>Design and architecture</h3>
+<p>Speaking of hierarchical separation, this can affect cognitive load in a different way: well-designed separation can improve germane cognitive load. If you're working on a well-designed codebase for a significant amount of time, your mind will use schemata to quickly guide you to the correct project or directory or file &quot;without thinking&quot;. You are probably familiar with this phenomenon already: working on such codebases will let you quickly find the location of some code in question even if you're not sure where it is precisely, because you're familiar with the overall design of the system.</p>
+<p>Conversely, codebases that are not well-designed will hamper your ability to find code whose precise location you don't already remember. This can be attributed to the inability to form a cohesive schema related to this codebase, since code is haphazardly separated without a clear hierarchy or other organizational means.</p>
+<p>Architectural and design patterns will often help to organize code in a way that we can process more easily, but we must be careful not to apply too many such patterns or apply them improperly to avoid confusion. The use of well-known patterns enhances our ability to process and understand a codebase because we have already developed (or can begin to develop) schemata to deal with these patterns.</p>
+<h2>Bringing everything together</h2>
+<p>All this human-centric discussion doesn't negate technical needs. Certain choices must be made for technical reasons, and sometimes these choices will make part of a codebase more difficult to analyze. As always, a balance must be struck. Modern compilers and interpreters are extraordinarily adept at optimizing code for execution performance, so low level optimizations are rarely needed these days. Technical needs will most often be expressed at higher levels. As an example, when system extensibility is required, certain architectural and design decisions must be made to support this requirement. Unfortunately, these decisions may lead to worsened readability, but you don't always have a great way to balance out system needs with human analysis needs.</p>
+<p>I urge you to keep the human factors dicussed here in mind when performing any task from the writing of functions to the design of systems. While different goals may take precedence at different times, simply keeping these concerns in mind will allow you to create better software.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2016-12-30T16:25:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>HashProp - a better way to MD5 (and SHA) in Windows - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">HashProp - a better way to MD5 (and SHA) in Windows</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2014-09-27T15:00:00">
+            Published on Saturday, 27 September 2014 at 11:00 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>HashProp is a Windows shell extension that I decided to write at the previous Carmel Code and Coffee meetup.
+Basically, it adds a new tab to the File Properties dialog for every file in Windows with the ability to calculate the file's hashes:</p>
+<p><img src="/assets/page-data/hashprop.png" alt="HashProp screenshot" /></p>
+<p>It's a simple interface, so people can quickly and easily calculate MD5, SHA-1, SHA-256, and SHA-512 for any file.</p>
+<p>I created this thing after getting some inspiration from <a href="https://twitter.com/Jaxidian">@Jaxidian</a>. He showed me a similar app that hasn't
+been updated in years, and that didn't support SHA-256 or SHA-512. Personally, I've been using an even older app that integrated into
+every file's right-click context menu - again, without support for SHA-256 or SHA-512. I remembered that, with the introduction of .NET 4,
+Windows shell extensions could be created in a managed environment, and I found a wonderfully <a href="http://sharpshell.codeplex.com/">easy to use SDK</a> to do just that.</p>
+<p>One thing I intentionally focused on was overall UX. Is the file being hashed very slowly? The percentage is shown while the calculation is
+occurring to let users know that the system is working. This is especially useful when hashing large files that are served over the network.
+What do I often do after hashing a file? I copy the hash to the clipboard. Clicking the textbox with the hash (or leaving the textbox
+selected until hashing completes) will auto-select all text in the textbox. Oh yeah, clicking the Calculate button disables it while the
+calculation is occurring, and the corresponding textbox is selected. And finally, if the hashing is taking a long time and the user
+closes the File Properties dialog, the hashing is stopped and the file handle is released. This is all a part of good UX.</p>
+<p>HashProp is released under the ISC License. The source code and links to binaries are on <a href="https://github.com/arktronic/hashprop/">available on GitHub</a>.</p>
+<p><strong>EDIT</strong>: Well, it looks like I released the first version a tad too early - before doing extensive testing. Turns out, the initial version
+of HashProp had two issues: the installer didn't always register the DLL correctly in the Registry due to UAC, and the property page code
+that I'm relying on from SharpShell doesn't seem to work on all platforms. I'm releasing version 1.0.1 now with a different way to access
+the hashing UI (file context menu) and a fixed installer. Sorry about that.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2014-09-27T15:00:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

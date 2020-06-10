@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Virtual Hackintosh, part 3: the hard route - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Virtual Hackintosh, part 3: the hard route</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2016-12-19T00:15:00">
+            Published on Sunday, 18 December 2016 at 7:15 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>In <a href="/weblog/2016-12-10/virtual-hackintosh-part-1-the-concepts/">part 1</a> I explained some of the basic concepts behind the hackintosh, and in <a href="/weblog/2016-12-11/virtual-hackintosh-part-2-the-easy-route/">part 2</a> I showed the easy way to create a hackintosh VM using VirtualBox. In this post I'll show the harder, but more flexible, way, which will allow you to have a custom screen resolution as well as connectivity to iCloud and iMessage.</p>
+<h2>Caveats</h2>
+<p>As I mentioned last time, there is also currently no way to have accelerated graphics in VirtualBox due to a lack of drivers, and there may be problems with audio as well. I am still unaware of any ways to work around this.</p>
+<h2>The guide</h2>
+<p>The instructions here work as of macOS Sierra 10.12.1/10.12.2 and VirtualBox 5.1.10. If you are using other versions, things may have changed, and so there is no guarantee that this guide will be accurate.</p>
+<h3>Step 0: Prerequisites</h3>
+<p>In order to follow this guide, you will need:</p>
+<ul>
+<li>The 16GB or higher installer disk with the macOS installer from <a href="/weblog/2016-12-11/virtual-hackintosh-part-2-the-easy-route/">part 2</a></li>
+<li>A real Mac with Internet access</li>
+<li>A VM host machine with VirtualBox installed and plenty of free space</li>
+</ul>
+<h3>Step 1: Download and install Clover</h3>
+<p>Download the latest <a href="https://sourceforge.net/projects/cloverefiboot/files/">Clover</a> installer (r3961 at time of writing) to your real Mac. Right-click the <code>.pkg</code> (package) file and select Open. Change the install location to the installer disk, which should be named &quot;Install macOS Sierra&quot;. After that, click the <code>Customize</code> button and ensure that the following options are selected:</p>
+<p><img src="/assets/page-data/hackintosh-clover-install.jpg" alt="Clover options" /></p>
+<p>Click <code>Install</code> and enter your password to proceed. macOS might show a warning that the &quot;package is incompatible with this version of macOS and may fail to install&quot;. It should be safe to ignore that warning and click <code>Install Anyway</code>.</p>
+<p>After the installation completes, copy the downloaded Clover installation package to the &quot;Install macOS Sierra&quot; installer disk - you'll need it again later.</p>
+<h3>Step 2: Configure Clover</h3>
+<p>As I explained in <a href="/weblog/2016-12-10/virtual-hackintosh-part-1-the-concepts/">part 1</a>, Clover is a bootloader capable of emulating EFI and various related firmware components. These components need to be configured so that upon bootup Clover sends the necessary information to macOS for correct operation. These configuration settings are stored in a file called <code>config.plist</code>. When placed in the correct location, this file (and optionally other associated files) will be read by Clover and used to configure the information sent to macOS.</p>
+<p>In order to expedite matters, I've created a &quot;base&quot; configuration file that can be used as a starting point. <a href="https://gist.githubusercontent.com/arktronic/de40f5bf99b2d56b47bdb60b32210f7a/raw/config.plist">Download this file</a> to your real Mac. Ensure that it's named <code>config.plist</code> after the download and that its contents haven't been mangled by your browser.</p>
+<p>Modifying the configuration file by hand can be a bit of a pain, so we'll use Clover Configurator to automate this process a bit. <a href="http://mackie100projects.altervista.org/download-clover-configurator/">Download the Vibrant edition</a> of the Clover Configurator.</p>
+<p>Open the downloaded <code>config.plist</code> file in Clover Configurator.</p>
+<p>In the &quot;SMBIOS&quot; section, click the &quot;magic wand&quot; button to create an emulated Mac profile. Select the type of device you want to emulate, and then select the specific version from the primary dropdown. After that, click the two &quot;shake&quot; buttons to create a random serial number. After clicking <code>OK</code>, copy the &quot;Serial Number&quot; field to the &quot;Board Serial Number&quot; field and append five random letters or numbers to the end. Then copy that resulting board serial number into the &quot;MLB&quot; field under the &quot;Rt Variables&quot; section. This is all demonstrated here for reference:</p>
+<p><img src="/assets/page-data/hackintosh-clover-config.gif" alt="Clover configuration" /></p>
+<p>After you've completed the above steps, open a new Terminal window and type in <code>uuidgen</code> (this will output a UUID on the next line). Copy this UUID to the clipboard. Go back to Clover Configurator and the &quot;SMBIOS&quot; section, and paste the UUID into the &quot;SmUUID&quot; field.</p>
+<p>To set your desired screen resolution, go to the &quot;Gui&quot; section, and select the screen resolution you want from the dropdown. The default resolution is 1920x1080.</p>
+<p>To set the amount of RAM you want to give to the VM, go to the &quot;SMBIOS&quot; section, and change the Memory information accordingly. The amount (marked &quot;Size&quot;) is the only value that you should change if you'd like to choose anything other than the default of 4096MB.</p>
+<p>Then you can close Clover Configurator. The <code>config.plist</code> file should have your modifications saved in it.</p>
+<h3>Step 3: Finalize the macOS installer changes</h3>
+<p>You'll need to copy the <code>config.plist</code> file to two locations: one on the main &quot;Install macOS Sierra&quot; partition next to the Clover installation package, and one on the EFI partition so that Clover will see it. The installer disk's EFI partition should already be mounted after Clover's installation process. If not, you can mount it like so:</p>
+<pre><code>sudo mkdir /Volumes/EFI
+sudo mount -t msdos /dev/disk2s1 /Volumes/EFI
+</code></pre>
+<p>If necessary, replace <code>disk2s1</code> above with the appropriate disk number. Note that <code>s1</code> should still be used, as the EFI System Partition should always be partition number 1.</p>
+<p>Copy the file to <code>EFI/CLOVER</code> on the EFI partition, replacing the existing <code>config.plist</code> there. After you've copied the file to both locations, eject the installer disk, unmounting all partitions.</p>
+<h3>Step 4: Create the VM</h3>
+<p>Open VirtualBox on your VM host machine and create a new VM:</p>
+<p><img src="/assets/page-data/hackintosh-vbox-create.jpg" alt="Create VM" /></p>
+<p>For simplicity, use the above settings. In later screens, select the same amount of RAM as you chose in Clover Configurator (4096MB by default), and create a dynamically allocated 60GB VDI virtual hard drive.</p>
+<h3>Step 5: Configure the VM</h3>
+<p>Certain VirtualBox settings are easier to configure via the command line, and some are just unavailable in the GUI. The <code>VBoxManage</code> command line tool allows for terminal-based control over VMs.</p>
+<p><strong>IMPORTANT</strong>: Before using VBoxManage, close all VirtualBox windows! Otherwise, certain settings may fail to apply, or you might even end up with a corrupted VM.</p>
+<p>Enter the following commands to further configure the <code>macOS</code> VM, replacing the screen resolution with what you chose in Clover Configurator and the <code>(copyrighted Apple key)</code> with the actual key that you can easily find online:</p>
+<pre><code>VBoxManage modifyvm macOS --firmware bios --vram 128 --usb on --usbehci off --usbxhci off
+
+VBoxManage setextradata macOS &quot;CustomVideoMode1&quot; &quot;1920x1080x32&quot;
+
+VBoxManage setextradata macOS &quot;VBoxInternal/Devices/smc/0/Config/DeviceKey&quot; &quot;(copyrighted Apple key)&quot;
+</code></pre>
+<h3>Step 6: Connect your installer disk</h3>
+<p>This should be a simple step, but unfortunately VirtualBox makes it difficult. Although it is possible to connect USB devices to virtual machines, you cannot normally boot from them, and that is precisely what we need to do. Luckily, VirtualBox does provide a <a href="https://www.virtualbox.org/manual/ch09.html#rawdisk">workaround</a> for this via a virtual raw disk access file.</p>
+<p>First, connect your installer disk to your VM host machine. Next, you'll need to determine its identifier on your machine. In Windows, you can do so on the command line by entering the following:</p>
+<pre><code>wmic diskdrive list brief
+</code></pre>
+<p>In *nix, you can inspect the output from the <code>mount</code>, <code>df -h</code>, <code>lsblk</code>, or <code>parted -l</code> commands.</p>
+<p>Determine which disk represents your installer disk and remember its Windows DeviceID (usually in the format of <code>\\.\PHYSICALDRIVE#</code>) or *nix device name (usually in the format of <code>/dev/sdX</code> or <code>/dev/disk#</code>). It is important to note that you should use the name of the device itself and not of its partitions.</p>
+<p>Next, create the raw disk access file. In Windows, you will need to launch a new command prompt as Administrator. In *nix, you may need to prefix the command with <code>sudo</code>. Enter the following:</p>
+<pre><code>VBoxManage internalcommands createrawvmdk -filename C:\usb.vmdk -rawdisk \\.\PHYSICALDRIVE#
+</code></pre>
+<p>Replace the filename above with an appropriate *nix path if you're not on Windows, and replace the physical drive identifier as needed.</p>
+<p>In the same administrative command prompt, enter the following:</p>
+<pre><code>VBoxManage storageattach macOS --storagectl SATA --port 2 --type hdd --hotpluggable on --medium C:\usb.vmdk
+</code></pre>
+<p>Replace the filename above if necessary.</p>
+<p><strong>NOTE: This differs from the equivalent step in part 2.</strong> Launch VirtualBox as Administrator in order to allow it to access the raw disk. Go to the macOS VM's settings, and look at the &quot;Storage&quot; section. Ensure that you have two hard disks and one optical drive under the SATA controller. Then, select the main macOS drive that should be the first item under the controller and change its SATA port from 0 to 3. This is necessary for the installer disk to be able to boot in BIOS mode.</p>
+<h3>Step 7: Install macOS</h3>
+<p>Start the macOS VM. If VirtualBox asks to pick a startup disk or ISO, just cancel out of that dialog.</p>
+<p>Once macOS boots up, use the Disk Utility to format the 60GB disk, naming it &quot;Macintosh HD&quot;, and then install macOS onto it.</p>
+<p>After the installer completes, there will be a first run setup wizard. When prompted to sign in with your Apple ID, you should be able to sign in if you so choose. When prompted to send diagnostics and usage data to Apple, uncheck that box. Since this isn't real Mac hardware, it would not be helpful for Apple to try diagnosing any issues from unsupported configurations.</p>
+<h3>Step 8: Install Clover in the VM</h3>
+<p>Although you are already able to boot the VM, VirtualBox is currently using the installer disk's copy of Clover. You'll need to install it on the 60GB drive before removing the installer disk.</p>
+<p>Open the &quot;Install macOS Sierra&quot; partition. You should see the Clover installation package and the <code>config.plist</code> file there, which you copied earlier. Install Clover on &quot;Macintosh HD&quot; with the same options selected as in step 1 above.</p>
+<p>After the Clover installation, the EFI partition of the main drive should be mounted. If not, mount it using the same commands as in step 3 above, but make sure that you are mounting the main disk's EFI partition and not that of the installer disk.</p>
+<p>Copy the <code>config.plist</code> file from the installer disk to the <code>EFI/CLOVER</code> folder on the EFI partition, replacing the existing one there.</p>
+<h3>Finishing up</h3>
+<p>At this point, it's a good idea to shut down the VM, go to its storage settings, and remove the raw disk access VMDK file. You may want to remove it from VirtualBox's Virtual Media Manager as well.</p>
+<p>You will want to disable power saving in the VM. VirtualBox seems to dislike it when the guest OS tries to sleep. Go to System Preferences, select Energy Saver, and disable both the computer and the display from going to sleep in the guest OS.</p>
+<h2>Final thoughts</h2>
+<p>In this guide I showed you how to create a mostly-functional macOS VM. I suspect that its functionality can be improved with further modifications to the <code>config.plist</code> file and possibly with a custom DSDT. I leave these possibilities as an exercise for the reader.</p>
+<p>Lastly, these posts wouldn't have been possible without the various sources of information that I used to gain a better understanding of macOS internals and the various jargon involved. <a href="http://www.insanelymac.com/forum/topic/309654-run-vanilla-os-x-el-capitan-sierra-yosemite-or-mavericks-in-virtualbox-5010-on-a-windows-host/">This thread</a> (and many others) on InsanelyMac, the Clover <a href="https://clover-wiki.zetam.org/Configuration">configuration reference</a>, and helpful pointers from Auri's post on <a href="https://aurir.wordpress.com/2016/11/20/how-to-setting-up-macos-x-sierra-on-virtualbox-for-xamarin-development-with-visual-studio/">setting up a virtual macOS Xamarin environment</a> are among those I found quite useful. And it goes without saying that those who developed the tools and systems used here deserve the most credit.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2016-12-19T00:15:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Automated software testing, part 1: reasoning - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Automated software testing, part 1: reasoning</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2015-11-02T04:00:00">
+            Published on Sunday, 1 November 2015 at 11:00 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <nopreview>
+<p><em>Navigation: part 1 | <a href="/weblog/2015-11-02/automated-software-testing-part-2-the-types/">part 2</a> | <a href="/weblog/2015-11-09/automated-software-testing-part-3-unit-tests/">part 3</a> | <a href="/weblog/2015-12-02/automated-software-testing-part-4-unit-tests-and-test-doubles/">part 4</a> | <a href="/weblog/2015-12-26/automated-software-testing-part-5-integration-testing/">part 5</a> | <a href="/weblog/2016-01-19/automated-software-testing-part-6-system-testing/">part 6</a></em></p>
+<hr />
+</nopreview>
+<p>Let's talk about automated software testing. I realize that a lot has already been said on this subject, but it seems that there's still a significant amount of misunderstanding in this important area of software development. I'm going to attempt to shine some light on a few of the core concepts of testing and how they should be applied in a typical, non-formal software project.</p>
+<p>It should be noted that this post is <em>not</em> about <a href="https://en.wikipedia.org/wiki/Test-driven_development">TDD</a>. Although they're undoubtedly related, there is a world of difference between that and what I'm talking about here.</p>
+<p><strong>Note to experienced devs:</strong> The part 1 and part 2 posts are intended for people who aren't very familiar with automated testing. If you're looking for more in-depth information on specific test types, stick around for <a href="/weblog/2015-11-09/automated-software-testing-part-3-unit-tests/">part 3</a>.</p>
+<h2>Why test?</h2>
+<p>Or, rather, why bother with automated tests? I know, I know, it's the obligatory introductory speech... in written form... but not everybody understands this, so it's important to mention.</p>
+<p>There are many reasons why automated tests are valuable. Here are three:</p>
+<ul>
+<li>Early detection of problems (near compile time; way before they get to production)</li>
+<li>Increased trust in codebase</li>
+<li>Easier maintainability and extensibility</li>
+</ul>
+<p>Let's go through these one by one. Early detection of problems is good because the last thing you want is your customers complaining that you released crap. Manual testing helps, of course, but it's far from perfect, and many issues can and will be missed, so huge gaps will exist in coverage of your code - gaps in which bugs are bound to occur. Adding automated testing fills a lot of these gaps. Also, manual testing is much more expensive than automated testing, since an automated test can be run any number of times essentially for free, while you have to hire people to do manual tests.</p>
+<p>Having automated tests increases your trust in the codebase. When you know that the critically important functionality of your product is tested every time somebody commits code, you feel more at ease. (Tests could be run by a build server when it sees new commits, and they can be run locally as part of a normal build process.) You don't dread releases and the inevitable issues that QA or your users are going to find and complain about. Maybe you even have more pride in your software.</p>
+<p>Maintainability and extensibility are made immeasurably better, faster, and generally easier when you have automated tests. Simply put, there is very little, if any, concern that the new feature you're adding (or the bug you're fixing) is going to negatively impact other areas of the code. This is very much related to the aforementioned trust in the codebase: when you're confident that there is sufficient testing, you are not paranoid about what could possibly happen when you change some obscure value.</p>
+<h2>When does the above not apply?</h2>
+<p>The three reasons mentioned above don't magically become true when you add automated tests. They are only true when a lot of things come together. If you have terrible automated tests, they will not detect problems early. If your automated tests are so brittle that changing a single constant breaks half of them, you won't have easier maintainability. If they randomly fail for no discernible reason on every third run, you may even <a href="https://en.wikipedia.org/wiki/Broken_windows_theory">stop caring</a> about them. And when you don't believe that the tests in your codebase are valuable, you just won't trust the codebase any more than you would without any tests whatsoever.</p>
+<h2>How do you make it apply?</h2>
+<p>That's the difficult part, isn't it?</p>
+<p>Let's start by looking broadly at the automated testing landscape. What major types or phases are there? You've got <a href="http://martinfowler.com/bliki/UnitTest.html">unit testing</a>. There's integration testing. And don't forget about system testing. Others exist as well, but for the most part, these are the essential ones every non-toy software project needs.</p>
+<p>Check out <a href="/weblog/2015-11-02/automated-software-testing-part-2-the-types/">part 2</a> for an exploration of these types.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2015-11-02T04:00:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

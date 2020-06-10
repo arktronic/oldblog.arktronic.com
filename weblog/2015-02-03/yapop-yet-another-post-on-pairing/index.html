@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>YAPoP (Yet Another Post on Pairing) - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">YAPoP (Yet Another Post on Pairing)</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2015-02-04T04:30:00">
+            Published on Tuesday, 3 February 2015 at 11:30 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>I almost named this post &quot;Yet Another Personal Opinion On Pairing&quot;, but the resulting acronym didn't seem entirely appropriate. So, what's the big deal with pairing - or pair programming, as it were? Overall, it can be a very useful tool. It often helps to flesh out the design of a solution that's about to be implemented, since one person usually does more thinking while the other person does more typing. It helps to keep people focused on the task at hand. It can also be very effective at providing instant gut-checks of code and of concepts. And, of course, it's extremely useful in bringing new people up to speed on the codebase and domain knowledge.</p>
+<p>The last point above is perhaps the most important reason to pair program. In my experience, the &quot;onboarding&quot; process for a new team member is made much more straightforward and expeditious when that person is pairing with someone more experienced or familiar with the project. In addition to providing valuable context for the code and the domain, the more experienced person will impart lots of undocumented knowledge during the task that the pair is working on, which is incredibly helpful not only for the new person, but also for the team, as interesting facts and processes that have never been formally defined come out, and this allows the team to critically examine them and perhaps to modify/improve, or at the very least to document them for future use.</p>
+<p>Thanks to all of the benefits that pairing provides, as well as the positive press it's been getting in the last few years, it's no wonder that more and more people and companies are seriously looking into how best to use pair programming techniques. And it seems that many have decided to embrace it to such an extent as to make it a mandatory part of their development process.</p>
+<p>But permit me to be an iconoclast for a bit and stray from the teachings of the Patron Priests of Pair Programming. Pairing is not all rainbows and sunshine. There are real reasons why it should sometimes be avoided. If we ignore those reasons and embrace pairing dogmatically, we're doing everyone - including ourselves - a great disservice. Let's start with an easy to comprehend reason: scheduling. Different people work at different times. They have different meetings, lunch hours, medical appointments, and so forth. If one person in a pair is unavailable for a couple of hours, should work on the task stop? Should another person be brought in to replace the missing one either temporarily or permanently? I would argue that the most productive answer is to be pair-less for those two hours, and once the missing person comes back, they can be quickly brought up to speed on the task's progress, since they're already familiar with it. Now let's take a closer look at the alternatives to this option.</p>
+<p>Bringing in another person temporarily would be disruptive. Everyone has a unique way of communicating, typing (Dvorak?), and behaving in general. Adjusting to pairing with a different person for a couple of hours only to have to adjust again when the original missing person returns is a huge time sink and would cause productivity to plummet. I write from experience: when I'm working on a task, a disruption can cost me anywhere between zero and twenty minutes of downtime. If I'm <a href="http://heeris.id.au/2013/this-is-why-you-shouldnt-interrupt-a-programmer/">mentally juggling</a> a lot of objects, keeping them all in my mind in order to figure out the appropriate way to connect them and isolate them and test them, and suddenly <em>BAM!!</em> I'm interrupted, it will take me a while to get back to that state, where I can once again continue to solve the problems at hand. (This wouldn't be a quick interruption, either - I'd have to explain the overall task, the progress made, the current status, and what needs to be done next.) Constantly switching pairs like this multiple times a day is effectively the concept of Promiscuous Pairing - something I've never seen work, and also something that, outside of the original <a href="http://user.it.uu.se/%7Ecarle/softcraft/notes/PromiscuousPairing.pdf">Arlo Belshee paper</a>, I've never read about working any better than normal pairing.</p>
+<p>Bringing in another person as a permanent pair replacement, in addition to causing a one-time disruption, does a disservice to the missing person because they have invested a not-insignificant amount of time learning the task's requirements, challenges, and proposed solutions, only to find that knowledge unusable since they're no longer on the task. How frustrating! Everyone knows that there is a certain amount of satisfaction in implementing your vision and seeing it work. There is also a certain amount of frustration when the task ends up being implemented differently from how you envisioned it - especially after you have personally invested in it by having begun work on that task. Yes, I'm hinting at the concept of code ownership, which some feel is misguided, but I have found that it helps tremendously in keeping code quality up. The reasoning for this is rather simple: if you care about the code that you helped to design or write, you will fight to keep it clean.</p>
+<p>Continuing on to the next reason to not pair: fatigue. Good, high-productivity pairing isn't just tiring; it's exhausting. I know that I, for one, don't want to come home every day exhausted. I've been there before, and it's not good. I'm not a robot whose job is to work tirelessly until its gears rust and disintegrate; there's only so much exhaustion that I can take. Doing too much of this is a surefire way to get burnt out. (I've been there, too, and believe me, it's so much worse than just being exhausted.) Sometimes, a nice, long break is needed from your pairing. So why not take on a new task solo and see it all the way through before going back to pairing? There is no need for unquestioning orthodox adherence to pairing.</p>
+<p>And what about productivity? Sure, there are times when pairing increases it. But on the other hand, I know I'm not the only one who'll occasionally stay at the office late, after everyone's gone, and implement a whole lot of the task in a fraction of the time it would have taken if I were pairing with someone. I believe that's referred to as being &quot;in the zone&quot;. It is possible for this to happen while pairing, but from my personal experience, as well as what I've seen <a href="http://programmers.stackexchange.com/questions/120407/how-can-you-achieve-and-maintain-flow-while-pair-programming">and</a> <a href="https://peniwize.wordpress.com/2013/11/17/pair-programming-give-it-a-rest/">read</a>, it's exceedingly rare.</p>
+<p>There is even a downside to the incredibly helpful pairing during the onboarding process. When an experienced person and one who is newer to coding (perhaps someone just out of college) are pairing on tasks in an unfamiliar codebase, this can cause issues. The reason for that is, the experienced person will want to dig into the code to determine how it currently works in order to modify it appropriately and within the established practices in that codebase. However, doing this while pairing with someone newer doesn't always work well. The newer person will often want to jump straight to coding, which is rarely what you should be doing in an unfamiliar codebase. If the more experienced person is &quot;driving&quot;, then they'll likely be going a mile-a-minute between different functions, files, and projects, determining how everything fits together, while the newer person is lost and bored. If the newer person is at the keyboard and mouse, then the more experienced person is <em>still</em> doing the code exploration, but through the other's hands. That doesn't help the newer person, since they're only following directions at that point.</p>
+<p>Finally, let's look at some of the positives from the first paragraph in a different light. The first two, to be more specific. When pairing helps to flesh out your solution's design, that could be a sign of bad practices: it's simply not a good idea to start coding before you have a plan of action. We've all done it at one point or another (I know I have) only to regret it later on, when we realize the ramifications of the choices that we implicitly made while coding up the solution with the first thoughts that came to us. I would, in fact, say that pairing is more useful when coming up with solutions to tough problems, rather than when coding them up. Indeed, I've worked on tasks in the past where the task would start with the pair figuring out the what and the how, and then splitting up and doing different parts of the work simultaneously. Toward the end of the task, we would merge our code, resolve any rarely-occurring outstanding issues, and move on. I wouldn't call this proper &quot;pairing&quot;, but it's worked remarkably well time and again.</p>
+<p>Along the same lines, keeping people focused through the use of pairing is another sign of bad practices (or, dare I say, bad personnel - but I won't go into that here). Personally, if I can't stay focused on a task, the reason is usually that the task itself isn't defined well, and I have to keep asking various people for clarifications. Another reason for this is tooling and environment failure, where the tests take over half an hour to run or the continuous integration server randomly fails builds. These disheartening events have a negative impact on productivity as well as morale, and they discourage people from being vigilant about keeping the codebase clean and tidy. Forcing progress to be made in these situations is nothing more than a band-aid that's used to hide the underlying issues.</p>
+<p>So, what am I trying to say? That pairing is bad and we should stop doing it? No. Pairing has clear benefits to it; the aforementioned gut-checks and faster code familiarization are extremely useful to the pair, the team, and the project as a whole. But it also has its own set of problems such as increased fatigue, and it allows teams to sweep some severe pre-existing problems under the rug, like skipping the design phase of tasks and getting used to <a href="http://en.wikipedia.org/wiki/Broken_windows_theory">broken windows</a>, as mentioned above. What I <em>am</em> trying to say is that pairing needs to happen when it is both needed and wanted - not when it's mandated by policy or contract or anything of the sort. And please don't tell me that, in order to experience the best that pairing has to offer, I have to be fully indoctrinated. That's akin to telling me that I have to have faith in your religion in order to truly embrace it. It's nothing more than circular reasoning. As professionals in the field of software engineering, we should use our best judgment to determine when pairing is desired and act accordingly, instead of blindly worshipping at its altar.</p>
+<p><em>EDIT: I'd like to thank <a href="https://larry-price.com/">Larry</a> for reading the drafts of this post and giving really useful feedback.</em></p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2015-02-04T04:30:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

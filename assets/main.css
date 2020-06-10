@@ -1,0 +1,242 @@
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Raleway Thin'), local('Raleway-Thin'), url('raleway-thin.woff') format('woff');
+}
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Raleway'), url('raleway.woff') format('woff');
+}
+
+body {
+    font-family: Arial, Geneva, Helvetica, sans-serif;
+    font-size: 12pt;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+header.banner {
+    height: 340px;
+    background: #000 100% url('tea-time.jpg') no-repeat;
+    color: #fff;
+    position: relative;
+}
+
+header.banner.small {
+    height: 190px;
+    background: #000 100% url('tea-time-small.jpg') no-repeat;
+}
+
+header.banner h1 {
+    position: absolute;
+    top: 167px;
+    left: 230px;
+    font-size: 32pt;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+}
+
+header.banner.small h1 {
+    top: 17px;
+}
+
+header.banner h2 {
+    position: absolute;
+    top: 170px;
+    left: 490px;
+    font-size: 40pt;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 100;
+}
+
+header.banner.small h2 {
+    top: 20px;
+}
+
+header.banner div {
+    position: relative;
+    top: 308px;
+    font-size: 14pt;
+    background: #000;
+    background: rgba(0, 0, 0, 0.6);
+    font-family: 'Raleway', sans-serif;
+}
+
+header.banner.small div {
+    top: 158px;
+}
+
+header.banner a {
+    color: #fff;
+    text-decoration: none;
+}
+
+header.banner div a {
+    display: inline-block;
+    padding: 4px 10px 6px 10px;
+}
+
+header.banner div a:hover {
+    text-decoration: underline;
+}
+
+article, section {
+    word-wrap: break-word;
+}
+
+article img {
+    max-width: 100%;
+}
+
+article h1.title {
+    margin: 16px 0 8px 0;
+    line-height: 24pt;
+    font-size: 24pt;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+}
+
+article h4.metadata {
+    margin: 6px 0 28px 0;
+    font-weight: 400;
+    font-style: italic;
+}
+
+section.post-listing a.read-more {
+    color: #600;
+    text-decoration: none;
+    margin-right: 28px;
+}
+
+section.post-listing a.read-more:hover {
+    text-decoration: underline;
+}
+
+section.post-listing h2 {
+    margin-top: 20px;
+    margin-bottom: 0;
+    font-size: 14pt;
+    font-weight: bold;
+    font-family: Arial, Geneva, Helvetica, sans-serif;
+}
+
+section.post-listing h2 a {
+    color: #000;
+    text-decoration: none;
+}
+
+section.post-listing h4.metadata {
+    margin: 0 0 4px 0;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 10pt;
+}
+
+section.post-listing article {
+    margin-bottom: 4px;
+}
+
+nav.pagination {
+    font-size: 14pt;
+    font-family: 'Raleway', sans-serif;
+}
+
+nav.pagination div {
+    text-align: center;
+    margin: 4px;
+}
+
+nav.pagination img {
+    margin-bottom: -2px;
+}
+
+nav.pagination span {
+    display: inline-block;
+    margin: 0 16px;
+    color: #999;
+}
+
+nav.pagination p {
+    display: inline-block;
+    padding: 6px;
+}
+
+nav.pagination a {
+    display: inline-block;
+    margin: 0 16px;
+    color: #600;
+    text-decoration: none;
+}
+
+nav.pagination a:hover {
+    text-decoration: underline;
+}
+
+div.sidebar .content{
+    padding-left: 18px;
+    padding-right: 18px;
+    margin-top: 24px;
+    width: 136px;
+    color: #666;
+}
+
+div.sidebar h3 {
+    font-family: 'Raleway', sans-serif;
+    margin-bottom: 4px;
+}
+
+div.sidebar .search .button {
+    display: inline-block;
+    padding: 1px 8px;
+    border: 1px solid #999;
+    color: #999;
+    margin-top: 4px;
+    text-decoration: none;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+div.sidebar .search .button:hover {
+    border: 1px solid #600;
+    color: #600;
+}
+
+div.sidebar .search #search-input-textbox {
+    width: 100%;
+}
+
+div.sidebar .about p {
+    font-size: 10pt;
+    font-family: 'Raleway', sans-serif;
+}
+
+div.sidebar .about a {
+    color: #600;
+    text-decoration: none;
+}
+
+div.sidebar .about a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    color: #666;
+    font-size: 10pt;
+}
+
+footer hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #999;
+    margin: 20px 0 0 0;
+}
+
+footer p {
+    margin: 6px 0 18px 0;
+}

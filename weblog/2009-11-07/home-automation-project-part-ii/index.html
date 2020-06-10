@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Home automation project, part II - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Home automation project, part II</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2009-11-07T22:02:03">
+            Published on Saturday, 7 November 2009 at 5:02 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Since I have decided to go with Z-Wave at the end of <em>Part I</em>, the next step is to determine what hardware I'll need for the features I laid out (again in part I). Some hardware is obvious, like the various Z-Wave modules I'll have to buy, while other hardware is more ambiguous, like what my Internet-accessible controller will run on. Let's get the more obvious stuff out of the way first.</p>
+<p>The first feature I'll deal with is HVAC access. There are a few choices for this, but the only feasible one appears to be the Schlage-manufactured Trane <a href="http://www.asihome.com/ASIshop/product_info.php?products_id=3941">TZMT400</a>, also known as <a href="http://store.homeseer.com/store/TZEMT043AB32---Z-Wave-Thermostat-Trane-P720C183.aspx">TZEMT043AB32</a>. I'm really not sure why it has multiple model numbers, so I'll just ignore that little problem. Other possibilities include the Wayne-Dalton WDTC-20 as well as its rebranded twin, the Intermatic CA8900 - people are saying that these devices are badly constructed - and the RCS brand thermostat stuff that is way too expensive.</p>
+<p>Next on the list is light control. Certain lights should be dimmable, while others should not. I also have to take into account support for &quot;beaming,&quot; which is required from other devices to the Schlage locks. Then again, the Trane thermostat supports beaming, and it is pretty close to my front door. If, however, the distance is too great, pretty much the only option I have is to buy a Schlage lamp module to talk to it, assuming I actually decide to use Schlage Z-Wave locks. So, what lamp modules and other lighting-related hardware should I buy? I've been wrestling with this question since the Part I post, and I've been unable to come up with a good solution.</p>
+<p>The issue is, I want to make use of dimmers, and ones like the <a href="http://www.smarthome-products.com/p-460-intermatic-homesettings-ha20c-3-way-in-wall-switch-dimmer.aspx">HA20C</a> are fairly inexpensive (comparatively speaking), but they do not work with CFL or LED bulbs. Part of my energy savings plan is to use CFLs and LEDs wherever possible in order to save on electricity costs. All of the cheaper Z-Wave dimmers I've seen have a minimum load requirement of 40W, which is obviously incompatible with 60W-equivalent 15W CFLs and 8W LEDs. If I don't use the cheaper dimmers, I have to use either more expensive dimmers or relay switches, such as the <a href="http://www.smarthome-products.com/p-168-homepro-zrw103-z-wave-20-amp-3-way-relay-white.aspx">ZRW103</a>, which are twice as expensive as the cheaper dimmers, if not more. While this is a one-time investment (ignoring replacement of malfunctioning switches), it is still pretty expensive. Some people have reported limited success using cheaper dimmers with dimmable CFLs, but since the loads for them are still below the minimum requirements, those dimmers would likely fail quickly when used in such a fashion.</p>
+<p>What I will probably end up doing is using the <a href="http://www.smarthome-products.com/p-654-homepro-zrf113-z-wave-isolated-contact-fixture-module.aspx">ZRF113</a> wherever applicable, supplemented by <a href="http://www.smarthome-products.com/p-170-homepro-as101-z-wave-3-way-companion-switch.aspx">AS101</a> auxiliary switches. I might also use the <a href="http://www.smarthome-products.com/p-163-intermatic-homesettings-ha05c-z-wave-indooroutdoor-screw-in-module.aspx">HA05C</a> in any locations that warrant its use. I think I will use ACT products whenever I can because (1) they are fairly inexpensive compared to other equivalent products, and (2) they are a local Indianapolis-based company, so I could easily talk to them if I have any issues or questions.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/8';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

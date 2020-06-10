@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Authentication, part two: are your users' passwords secure? - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Authentication, part two: are your users' passwords secure?</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2012-09-21T03:26:23">
+            Published on Thursday, 20 September 2012 at 11:26 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>In <em>Authentication, part one</em> I discussed the pros and cons of single sign-on, and if you've decided to use an SSO solution, that's great. However, if SSO doesn't fit your requirements, then you'll need to take care of storing your users' passwords. The first thing you should do when determining how to store passwords is apply the <a href="http://en.wikipedia.org/wiki/You_ain%27t_gonna_need_it">YAGNI principle</a>. In other words, avoid overengineering. If your website or app is only going to be used internally at your company, behind a firewall, by four people, then you really don't need a very secure password system. You might even be able to get away with storing those passwords as plaintext. Of course, that won't do if your website or app is exposed to the Internet or if it may be used by a significant number of people.</p>
+<p>Before delving into password storage security, I'd like to touch on a related topic - password complexity requirements. Many people are familiar with silly corporate password policies of &quot;minimum 17 letters, 11 numbers, two special characters, three spaces, and a Greek god&quot;. If you're going down the path of dictating strict requirements, then you're better off requiring passphrases instead of forcing very specific minimal character type counts on your users. Passphrases may take slightly longer to type, but they are much easier to remember than complex nonsensical passwords and, consequently, much less likely to be written down on a sticky note. Alternately, you can require a minimum password complexity based on password entropy calculations, as long as you also check for dictionary words and adjust the complexity ratings accordingly.</p>
+<p>So, what's a good, secure way to store users' passwords? It helps to think about this in &quot;levels&quot; of security:</p>
+<p>Level 0 - Plaintext - Horrible.<br />
+Level 1 - Reversible encryption (AES, etc.) - There's no good reason to do this.<br />
+Level 2 - Basic hashing (MD5, SHA-256) - This is not considered secure anymore. Stop it.<br />
+Level 3 - Hashing and salting - Pretty standard today, but not great.<br />
+Level 4 - Hashing and salting using modern PBKDFs - This is best.</p>
+<p>Let's go through each level. As I explained earlier, Level 0 should only ever be used on tiny, insignificant internal projects because it is entirely insecure.</p>
+<p>Level 1 is marginally better because the password isn't stored as plaintext, but it is not a good idea. Usually developers do this because they want to be able to recover user passwords. However, it is generally accepted that such functionality introduces unacceptable risk. If the set of encrypted passwords is stolen by an attacker, then figuring out the encryption key will enable said attacker to decrypt all of the passwords at once.</p>
+<p>Level 2 prevents decryption of passwords by using one-way encryption, a.k.a. hashing. When the user authenticates, you use the same hashing algorithm on their entered password and simply check if the hashes match. Unfortunately, this is still not secure. People have created what's known as &quot;rainbow tables&quot;, or large lists of hashes and their corresponding plaintext values. It becomes trivial to run the hashes through rainbow tables and get many, if not most, passwords back as plaintext.</p>
+<p>Level 3 makes the use of rainbow tables infeasible by appending or prepending random characters to user passwords. Those random characters are called a salt. You store the salt along with the hash resulting from the concatenation of the user's password and the salt. When the user authenticates, you perform the same concatenation of the stored salt to the entered password and then check if the hashes match. Because (good) salts are long and random, rainbow tables are highly unlikely to have any plaintext that happens to match the concatenation of the salt and the actual password. This can be slightly enhanced by using two salts - one randomly generated salt stored with the hash, and one static salt stored in the filesystem. That way, if the database is compromised, one of the salts is still hidden from the attacker. However, this is still not a great way to store passwords. Due to advances in <a href="http://en.wikipedia.org/wiki/GPGPU">GPGPU</a> technology, it is becoming increasingly easy to brute-force even salted passwords. And if more than one password is discovered via brute-force, the second salt is easily identified. The reason that the various hashing techniques in this level (and the previous one) are problematic is that hashing functions were designed to be efficient and fast. This is bad when you're trying to obstruct brute-force attacks. But fear not, as there is a solution to this problem.</p>
+<p>Level 4 is considered good by today's standards. Password-based key derivation functions (PBKDFs) such as <a href="http://en.wikipedia.org/wiki/PBKDF2">PBKDF2</a>, <a href="http://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>, and <a href="http://www.tarsnap.com/scrypt.html">scrypt</a> deliberately slow down the generation of a hash (or key) in a configurable manner. PBKDF2 and bcrypt allow you to specify the CPU cost of hash generation, while scrypt allows you to specify the CPU cost, memory cost, and parallelization factor. Configured properly, these functions introduce a negligible slowdown in the user authentication process, while at the same time thwarting brute-force attacks by making each hashing attempt take a slightly longer time (and optionally use up more memory). Since brute-forcing normally requires millions upon millions of hashing attempts, even a slight delay per attempt makes the process virtually impossible. And, when hardware becomes faster and memory cheaper, the configuration can be easily altered to require more CPU and more memory per attempt. Existing passwords could then be silently migrated over to the new configuration by re-hashing them upon successful user login.</p>
+<p>So there you have it. If you want to securely store your users' passwords, you know what to do. I was curious about modern methods of secure password storage, so I researched the topic a bit, and ended up with this blog post. In the process, I also implemented <a href="https://bitbucket.org/Arktronic/keyderivation">PBKDF2 and scrypt</a> (the latter relies on the former) in .NET. Feel free to use that code and to contribute!</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/30';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

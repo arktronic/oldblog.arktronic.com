@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Home automation project, part IV - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Home automation project, part IV</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2009-11-15T16:14:03">
+            Published on Sunday, 15 November 2009 at 11:14 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>In <em>Part I</em>, <em>Part II</em>, and <em>Part III</em>, I covered mostly the reasoning behind my home automation project, and its hardware components. Now it's time to conquer the project's most challenging aspect, the software. I suppose the reason that I consider software to be the most challenging aspect is that I'm a software engineer, and as such, I always feel the need to tweak the hell out of any software system I might go with, or even create my own from scratch. Hardware engineering isn't aligned too well with my skillset, which is why I very rarely do any hardware hacking that might involve precision soldering and the like. Therefore, I usually end up accepting hardware limitations as a fact of life (unless they're just too egregious), but I have a hard time accepting software limitations, especially when there's something I can do about them.</p>
+<p>I have a few criteria for the software I would like to use:</p>
+<ul>
+<li>Inexpensive - after investing so much in the hardware (I have no doubt that it will add up quickly), I don't want to spend a ton on the software</li>
+<li>Customizable - I want to be able to do pretty much anything I want with certain events, times, etc.</li>
+<li>Extensible - if there's some customization that can't be done by default, I want to be able to extend the software myself</li>
+<li>Compatible - I don't want the software to only be compatible with a single PC controller, or a single series of products</li>
+</ul>
+<p>In addition to the generic criteria above, here are the features I want the software to have:</p>
+<ul>
+<li>Actions executed based on time, events, or a combination thereof</li>
+<li>Customizable actions including controlling Z-Wave devices as well as external programs</li>
+<li>Web-based interface (HTTPS!) with either a mobile-friendly layout or actual mobile apps, including Windows Mobile and possibly Android - don't care about iPhone</li>
+<li>Easy to understand current and historical status reports</li>
+<li>Ability to record and display available video streams</li>
+<li>OPTIONAL: TTS support</li>
+<li>OPTIONAL: speech recognition support - I really don't need this, but it would be cool</li>
+<li>Intuitive set up and control</li>
+</ul>
+<p>I've found four software solutions for Z-Wave control that look at least a little promising: ThinkEssentials from ControlThink, HSPRO from HomeSeer, Web-Link II from HAI, and the open source LinuxMCE project. HSPRO is the first to go, as it costs a whopping $600. Hell no.</p>
+<p>Web-Link looks pretty interesting, but apparently it can't &quot;configure&quot; or &quot;program&quot; the HAI system, which in this case would be a Z-Wave system - I'm not even sure what the difference between &quot;configure&quot; and &quot;program&quot; is in this context. It's certainly cheaper than HSPRO, but it's still around $300, and I couldn't use it to do system setup or to extend its functionality (as far as I can tell), so it's out as well.</p>
+<p>ThinkEssentials seems to be a nice program, pretty cheap (around $50-$90), and ControlThink provides an SDK as well. Unfortunately, any program using the SDK cannot run at the same time as ThinkEssentials on the same hardware, plus the SDK has some severe limitations, both control-wise and licensing-wise. Since SDK-based apps have to be separate from ThinkEssentials, I'd pretty much end up writing my own Z-Wave control suite using their limited SDK, which I don't really want to do. ThinkEssentials is, therefore, out.</p>
+<p>All that's left now is LinuxMCE. It is extremely powerful, with many features ranging from PVR to home automation to telecommunications. It has its own Z-Wave driver that is compatible with many PC controllers and many devices. It even has a specialized interface for Windows Mobile. Oh, and it's free and open source. The problem is, I'm not sure I'd be able to extend it easily. This software is so complex that I'd have to understand very many aspects of it before I could do anything useful to it. In addition, the documentation for the software - a wiki - is perpetually incomplete and/or out of date, something which open source projects are notorious for. So while LinuxMCE is the most promising software, I don't think I want to go with it considering its issues.</p>
+<p>The only option l have left, that I hinted at in the beginning of this post, is writing my own software from scratch. It would be a pretty giant challenge to get Z-Wave control to work, not to mention all the features I listed above.</p>
+<p>If I am to write my own software, I must have access to Z-Wave technical information. Unfortunately, the official SDK is under NDA and costs over $1000. That is most definitely out of the question (unless Zensys/Sigma Design decide to be nice to me and lower the price). One alternative is to make use of the LinuxMCE documentation on the Z-Wave protocol, which was reverse-engineered by monitoring COM ports. I'm not sure if the information in their wiki carries a restrictive license, though, so that might be an issue. Another alternative is for me to reverse-engineer the protocol myself. Not an easy task, but I've done communications reverse engineering before.</p>
+<p>Assuming I'm writing my own software, I need to determine the requirements, limitations, and other basics. First of all, I know that I want to write this in C#. That limits me to either Windows or the (rather large) subset of the .NET Framework supported by Mono. The good thing about writing Mono-compatible code is that I could run it on a Marvell SheevaPlug, a wall wart-sized computer with a 1.2GHz ARM CPU that uses somewhere between 2W and 7W of power. It would be energy efficient and reliable, having no moving parts (as far as I know) and a stable Linux operating system. Mono compiles for ARM, too. The bad thing about writing Mono-compatible code is that I have to take into account Mono's limitations and implementation quirks.</p>
+<p>As for application requirements, most of them have already been outlined above as part of my software criteria. This software should be modular enough that it could be extended relatively easily to control non-Z-Wave home automation technologies. In fact, as the criteria imply that I want to be able to execute any action available to the computer, perhaps Z-Wave should be implemented through a generic control interface, along with other interfaces, such as executing external programs, calling Web services, etc. At this point, I have to step back and ask myself: am I making this project too complicated? Is a whole event framework that encapsulates Z-Wave, generic actions and events, and basic interfaces for powerful extensibility all just a little too much? Well, let's see.</p>
+<p>An event framework shouldn't be too hard to write. You have events, actions, and mappings between the two. <em>Sounds</em> easy. Of course, I've never actually written one, so there is a high probability of me simply being ignorant of some very complex behaviors that I'd have to address. Then, once the basic event framework is ready, it needs to have some default actions coded (e.g. execute a program, call a Web service, execute a Z-Wave command) as well as some default events (Z-Wave event occurred, date/time reached a set point, command received from some interface). Out of those, the Z-Wave actions and events would be the most difficult ones to write. After that, I'd have to design and create the UX for the entire system.</p>
+<p>This is most definitely a big project, but out of all the things I need to do with it, the extensibility portion probably isn't a very hard one. That would mean that, to answer my earlier question, this isn't too much. Before I commit to this plan of action, however, I want to try out LinuxMCE to see if it can do <em>most</em> of what I want. If it can, then I might just settle for it, assuming, of course, that it's intuitive enough, since I already know the documentation is lacking. The next step, then, is to get some Z-Wave hardware and try out LinuxMCE. That will take a while, since I have many more urgent tasks to do around the house, so the next update on this project will likely not happen any time soon.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/10';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

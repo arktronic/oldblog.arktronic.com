@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>A good Windows console environment - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">A good Windows console environment</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2012-09-09T00:39:20">
+            Published on Saturday, 8 September 2012 at 8:39 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Sometimes I really miss the Linux shell on my Windows computers. I rely on too much Windows-specific stuff to actually switch to Linux for my everyday computing activities - not to mention Windows Phone development - but I do want more power from my commandline than cmd.exe provides by itself. I've customized my console experience pretty heavily on my Windows 8 laptop, and I'm pretty happy with it now. This post is both to help others do the same if they so wish, and to help me remember what I did for next time.</p>
+<p>I've made some, shall we say, odd choices in this configuration, and I'll explain why along the way.</p>
+<p>First of all, here's all that needs to be installed:</p>
+<ul>
+<li><p>Cygwin - because Bash is quite a bit more powerful than cmd.exe, and standalone MinGW-based versions are really outdated</p>
+<ul>
+<li>bash - should be installed by default anyway</li>
+<li>openssh - because I prefer it over PuTTY/Plink for connecting to git and hg</li>
+<li>screen - this is used as a workaround for a strange Cygwin bug; I'll explain later</li>
+</ul>
+</li>
+<li><p>ConEmu - a very powerful open source console wrapper</p>
+</li>
+<li><p>Python 2.7 - optional; for hg integration
+There are primarily two reasons for choosing ConEmu. Aside from the obvious FOSS stuff, ConEmu (1) can resize the console horizonally, unlike cmd.exe, and (2) has excellent power-user features, such as customizable &quot;Shell here&quot;-type Explorer integration and a nice tabbed interface. MinTTY, which comes with Cygwin, is unlikely to get a tabbed interface and isn't very customizable. Like its name implies, it's minimal.</p>
+</li>
+</ul>
+<p>For simplicity's sake, I installed Cygwin in C:\Cygwin. Everything else was installed in default locations.</p>
+<p>By default, ConEmu's installer enables the &quot;Inject ConEmuHk&quot; option for better compatibility. I found that it's pretty slow, so I disabled it.</p>
+<p>After the above apps have been installed, comes the configuration.</p>
+<p>In order to somewhat streamline the ConEmu configuration, I created a regular batch file that ConEmu launches both for a regular shell and for a &quot;start in this directory&quot; style shell. For the latter, I also created a shell script that takes care of going to the correct path when a file is selected instead of a directory. Here they are:</p>
+<p><strong>C:\Cygwin\constart.bat</strong></p>
+<pre><code>@echo off  
+C:\Cygwin\bin\screen.exe C:\Cygwin\bin\bash.exe -l -i %*
+</code></pre>
+<p><strong>C:\Cygwin\conhere.sh</strong></p>
+<pre><code>#!/bin/sh  
+if [ -d &quot;$1&quot; ]; then  
+    cd &quot;$1&quot;  
+else  
+    cd &quot;`dirname \&quot;$1\&quot;`&quot;  
+fi  
+bash  
+</code></pre>
+<p>That %* parameter in the batch file passes all commandline arguments given to the batch file onto Bash.</p>
+<p>The reason I launch screen instead of launching Bash directly is a bit complicated. It's done in order to avoid a strange issue that causes Ctrl-C to not function when executing native Windows apps, such as ping. There are mailing list emails (<a href="http://cygwin.com/ml/cygwin/2012-03/msg00105.html">one</a>, <a href="http://cygwin.com/ml/cygwin/2012-03/msg00142.html">two</a>) that somewhat explain this bug and claim that it's fixed, respectively. However, it's not fixed for me. So, in order to use /dev/pty# instead of /dev/cons# through a regular shell, I'm cheating and launching it in screen, which is a virtual console. If there's a better way to do this, I'd really like to know.</p>
+<p>ConEmu's startup commandline in its settings screen, under Startup, is:</p>
+<pre><code>C:\Cygwin\constart.bat -new_console:an
+</code></pre>
+<p>The -new_console parameter is interpreted by ConEmu itself; see its <a href="http://code.google.com/p/conemu-maximus5/wiki/NewConsole">documentation</a> for details.</p>
+<p>Under Features/Integration, I configured the &quot;ConEmu Here&quot; context menu integration to the following command:</p>
+<pre><code>/single /cmd c:\cygwin\constart.bat -c &quot;/conhere.sh \&quot;`cygpath -u '%L'`\&quot;&quot; -new_console:an
+</code></pre>
+<p>Yes, that is one confusing command with lots of varying quotes. If there's an easier one, please tell me. Essentially, it launches Bash and makes it go to the current directory, signified by '%L'. It's in single quotes in order to handle spaces in directory names. The cygpath command is used to translate the Windows directory name to the Cygwin equivalent. The escaped double quotes surrounding that command are also for handling spaces in directory names. Finally, Bash is launched in interactive mode on the last line of conhere.sh instead of just quitting after changing directories.</p>
+<p>Past all that, everything comes down to personal choices of Bash customization with functions, aliases, and so forth.</p>
+<p>I disabled screen's Ctrl-A hook by adding the line &quot;bind ^a&quot; to /etc/screenrc. That turns screen into, for all intents and purposes, a regular virtual console.</p>
+<p>Since nano has strange cursor scrolling behavior in Cygwin, I'm using <a href="http://ne.dsi.unimi.it/">ne</a> instead. It's nice, and it comes with a binary specifically compiled for Cygwin.</p>
+<p>For git and hg integration, I created functions in the global bashrc file for changing the $PS1 variable:</p>
+<pre><code># Enable Hg integration  
+__hg_ps1() {  
+    hg prompt &quot;{ on {branch}}{ at {bookmark}}{status}&quot; 2&gt; /dev/null  
+}  
+# Enable Git integration  
+source /cygdrive/c/Program\ Files\ \(x86\)/Git/etc/git-completion.bash  
+ps1def() {  
+    export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '  
+}  
+ps1hg() {  
+    export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[36m\]$(__hg_ps1)\[\e[0m\]\n\$ '  
+}  
+ps1git() {  
+    export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[36m\]$(__git_ps1)\[\e[0m\]\n\$ '  
+}  
+  
+# Set a default prompt of: user@host current_directory {hg/git/none}  
+ps1hg
+</code></pre>
+<p>The hg integration requires installation of <a href="http://sjl.bitbucket.org/hg-prompt/">hg-prompt</a> and Python to run it.</p>
+<p>Finally, I added some convenient aliases:</p>
+<pre><code>alias ls='ls --color=auto'  
+alias la='ls -lha'  
+alias 2w='cygpath -w'  
+alias 2u='cygpath -au'  
+alias nano='echo &quot;Using ne instead of nano!&quot;; sleep 2s; ne'
+</code></pre>
+<p>That's about it. I might be missing a few things, but for the most part, this is a very usable console environment that's better than the default Windows one. If you have any suggestions for improvement, I gladly welcome them.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/28';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

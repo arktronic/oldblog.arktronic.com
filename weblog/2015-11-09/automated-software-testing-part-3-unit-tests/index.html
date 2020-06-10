@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Automated software testing, part 3: unit tests - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Automated software testing, part 3: unit tests</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2015-11-10T04:00:00">
+            Published on Monday, 9 November 2015 at 11:00 PM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <nopreview>
+<p><em>Navigation: <a href="/weblog/2015-11-01/automated-software-testing-part-1-reasoning/">part 1</a> | <a href="/weblog/2015-11-02/automated-software-testing-part-2-the-types/">part 2</a> | part 3 | <a href="/weblog/2015-12-02/automated-software-testing-part-4-unit-tests-and-test-doubles/">part 4</a> | <a href="/weblog/2015-12-26/automated-software-testing-part-5-integration-testing/">part 5</a> | <a href="/weblog/2016-01-19/automated-software-testing-part-6-system-testing/">part 6</a></em></p>
+<hr />
+</nopreview>
+<p>The first and second parts of this blog post series are an overview of automated software testing, with <a href="/weblog/2015-11-01/automated-software-testing-part-1-reasoning/">part 1</a> focusing on the <em>why</em> and <a href="/weblog/2015-11-02/automated-software-testing-part-2-the-types/">part 2</a> a pretty high-level <em>how</em>. Now, with the third part, let's delve deeper into the <em>how</em> of unit tests specifically.</p>
+<p>As I explained in part 2, unit tests shouldn't see the &quot;big picture&quot;. They must be purposely designed to test their units and nothing else. It's often tempting to create unit tests that span multiple units in order to get a more realistic representation of state, but you should strive to avoid this. Such tests should be added at the integration level instead.</p>
+<h2>Let's get interactive</h2>
+<p>Part of my goal is to explain many of the concepts here with real examples instead of just words, because I think that running a test for yourself and seeing it pass or fail is much more powerful than simply reading about it. To that end, I created an online JavaScript runner/tester, which lets you write JavaScript code and tests and run them immediately in your browser.</p>
+<p>I've chosen Jasmine, a popular testing framework, to help show the concepts below. Please take a moment to look at Jasmine's <a href="https://jasmine.github.io/2.3/introduction.html">terminology and syntax</a> so you can follow along more easily. You can also keep that page open in another browser window or tab and refer back to it if you're unclear on how a particular Jasmine feature works.</p>
+<p>Now let's take a look at a very basic coding and testing example, &quot;hello world&quot;.</p>
+<p><strong><a href="http://js.codeit.live/js-testing-demo/?helloWorld">Hello World example</a></strong></p>
+<p>On the left, you'll see a function that returns the familiar string. This is the code that is to be tested. On the right, you'll see a test suite defined using the <code>describe</code> function, and two tests (&quot;specs&quot; in Jasmine parlance) defined using the <code>it</code> function inside. If you run the tests, you should see something similar to the following in the test output:</p>
+<pre><code>Jasmine v2.3.4 started.
+Hello World function
+    should exist
+        [passed]
+    should return the expected value
+        [passed]
+Hello World function: finished
+Test run complete.
+</code></pre>
+<p>Both tests passed, hooray! You can play around with the <code>helloWorld</code> function and its tests, and run them again to see what happens when failures occur. Jasmine's syntax is intended to assist developers with using <a href="https://en.wikipedia.org/wiki/Behavior-driven_development">BDD</a>, but that's a topic that is far outside the scope of this post, so we can gloss over the details, such as why some things are so verbose. Suffice it to say, natural language constructs are an important aspect. In fact, as you can see from the output above, the suite and spec text could be read as &quot;Hello World function should exist&quot; and &quot;Hello World function should return the expected value&quot;.</p>
+<p>Of course, Hello World isn't a real-world example. Not only are there no code-containing units to speak of, there's virtually no functionality, either. This makes for a great example of how to use the tools at a mechanical level, but not any deeper.</p>
+<h2>A better example</h2>
+<p>To demonstrate something a bit more advanced, we'll need to start making use of code encapsulation in JavaScript, often implemented using a <a href="http://www.samselikoff.com/blog/some-Javascript-constructor-patterns/">constructor pattern</a>. This also serves as a decent approximation of classes with public and private methods in languages that support these concepts natively. For the next example, then, let's say we want to create a relative time formatter - something that will take a date object and return, for example, &quot;5 days ago&quot;, based on the difference between that date object and now.</p>
+<p><strong><a href="http://js.codeit.live/js-testing-demo/?relativeTime">Relative time formatter example</a></strong></p>
+<p>As you can see, the formatter's code is a lot more complicated than Hello World, but the tests in this case are pretty simple and straightforward: they just pass in various dates and verify the &quot;correctness&quot; of the output. Notice that I put quotation marks around the word correctness. The reason is that, with unit tests or any other tests for that matter, what you consider to be correct may not match what your users consider to be correct. It may be an obvious statement, but it is nonetheless important to keep in mind that just because the tests are passing doesn't mean that <a href="https://en.wikipedia.org/wiki/Bugzilla#Zarro_Boogs">there are no issues</a>.</p>
+<h3>Test doubles</h3>
+<p>While the above example is relatively isolated from external dependencies, it does rely on one: the current date/time. Since we can't predict when our tests run, we have to have a way to control what the formatter <em>thinks</em> is the current date/time in order to have meaningful tests. Luckily, Jasmine provides a way to &quot;stop time&quot; at a desired point by replacing the real <code>Date</code> object with a fake one. Faking objects is an example of using <a href="http://martinfowler.com/articles/mocksArentStubs.html">test doubles</a>. As the linked article explains, test doubles include mocks, stubs, and fakes. Although Jasmine uses a function named <code>mockDate</code> to accomplish its goal, it's really creating a stub rather than a mock. However, terminology surrounding test doubles isn't universally consistent, so you should expect differences in definitions when reading articles or talking with people about them.</p>
+<p>It's important to know when a test double requires a tear down procedure - and even more important to then implement it. In this case, <code>jasmine.clock().uninstall()</code> is called after each spec run. This is done in order to prevent &quot;leakage&quot; of test doubles from specs that run earlier in the execution order to ones that run later. Such leakage can cause very confusing test results and problems that are often difficult to track down. Since there is only one suite in this example, and all specs rely on the test double, the tear down is not strictly needed here, but it is nevertheless a good practice.</p>
+<h3>Public vs. private</h3>
+<p>The only public function exposed by the relative time formatter is <code>format</code>, due to it being assigned on <code>this</code>. The other functions in it are private. That means they cannot be tested directly. It can be tempting to expose additional functions publicly in order to test them directly, but you should avoid doing so (unless those functions are actually needed by non-test code). One reason is that, as you are testing a unit, you should only be concerned with the unit's inputs, outputs, and external side-effects (if any). The internal state of the unit shouldn't matter, since that isn't the purpose of unit testing: what you should be testing is the <em>what</em>, not the <em>how</em>. Another reason is, if you start tying a unit's internal functionality to external dependencies (tests in this case), the unit becomes extremely brittle. For example, right now you could rename <code>getMidnightOfDate</code> and the calls to it, or even get rid of the function entirely and duplicate its code in the two places it's called, and no tests should break. If you were to expose this function publicly, you would now be tied to the current implementation, and any change would mean fixing tests that failed for no good reason. Not only that, but other people may start using this exposed function when you hadn't intended it, which effectively prevents you from changing it without costly and time-consuming refactoring.</p>
+<p>So, how do you test private functions? The answer is, you test them indirectly. Going back to the example of the <code>getMidnightOfDate</code> function, it is tested by calling <code>format</code> with a date that is 24 hours in the past or older. This indirect testing can be painful to do at times, but when that pain becomes too much, it's a strong indicator that your unit may need to be refactored or broken up into multiple smaller ones. If you're at the point of drawing diagrams just to figure out the precise set of inputs you need to test a certain code path, you should take a step back and ask yourself whether the unit is just too big.</p>
+<h3>Too much vs. not enough</h3>
+<p>At what point do you say that your unit has enough coverage? (And don't tell me that it's when your code coverage tool says 100%! See part 2 for a refresher on that.) The way to determine the answer can be considered partly art and partly science. You should strive to test most, if not all, of your unit's code paths. However, a meticulous analysis of the possible paths and their tests can be very time consuming. Sometimes the detailed output of a code coverage tool will be able to point out paths that aren't tested, and you can judge for yourself whether to add tests there.</p>
+<p>For this example, I chose to write tests that exercise the major code paths (i.e., the different words for days, a future date, and generic past days), as well as an extreme (365 days) that is still well within the realm of possibility. I did not choose to write a test that, for example, verifies that an exception is thrown if something other than a <code>Date</code> object is passed to <code>format</code>. While that could conceivably happen, I feel that there's no need to check this case because I consider it undefined behavior and, as such, unimportant.</p>
+<p>I also didn't test leap years because I expect the browser's JavaScript implementation to handle that for me (so if I were to compare 2017-01-01 and 2016-01-01 the difference should be 366 days). There is generally no need to verify the correctness of the basic frameworks or language features that you're using. While it is possible to encounter bugs in them, this is an exceedingly rare occurrence, and not one you should spend time worrying about or writing tests against.</p>
+<p>If you write many tests that exercise the same code paths, that makes it difficult to modify the unit in the future, because a lot of tests would break. On the other hand, if your tests don't exercise the important code paths of your unit, you could encounter bugs either in the original implementation or after a modification, if such a modification accidentally changed the result of an untested code path. Striking a balance is key here.</p>
+<h2>Next time</h2>
+<p>In <a href="/weblog/2015-12-02/automated-software-testing-part-4-unit-tests-and-test-doubles/">part 4</a>, I'll to go into more detail on test doubles (and spies) and how to use them to verify a unit's external interactions.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2015-11-10T04:00:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

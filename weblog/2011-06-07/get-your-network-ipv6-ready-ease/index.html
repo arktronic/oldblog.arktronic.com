@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Get your network IPv6 ready with ease - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Get your network IPv6 ready with ease</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2011-06-08T04:51:30">
+            Published on Wednesday, 8 June 2011 at 12:51 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>June 8, 2011 is World IPv6 Day. If you don't know what that means (and you want to find out), then <a href="http://www.worldipv6day.org/">here</a> <a href="http://en.wikipedia.org/wiki/World_IPv6_Day">are</a> <a href="http://www.zdnet.com/blog/networking/what-is-world-ipv6-day-and-why-it-matters/1148">some</a> <a href="http://arstechnica.com/business/news/2011/06/google-yahoo-facebook-turn-on-ipv6-for-a-day-tomorrow.ars">links</a>. This post is targeted toward tech-savvy people who (1) haven't had a chance to IPv6-enable their networks, (2) want to do it, and (3) don't want it to be a big hassle. I am one such person, and I decided to forgo #3 in order to help others to do this.</p>
+<p>Chances are, your ISP doesn't give you native IPv6 addresses. In this case, you still have the ability to access IPv6 resources on the Internet. You just have to go through an intermediary. There are multiple methods and protocols to do this - Teredo, 6to4, and 6in4, to name a few. In this post I'll focus on the one I used, 6to4. The reason I used it is that it's very easy to set up as well as to test whether the method is available to you.</p>
+<p>Let's start with the requirements. First, you'll need a router that is compatible with the Tomato custom firmware. See the compatibility table <a href="http://tomatousb.org/doc:build-types">here</a>. Since you're IPv6-enabling your entire network, this must be done at the router level. If your router doesn't support Tomato, then this guide will be of limited use to you. Second, the client computers on your network should be IPv6 ready. Modern operating systems come with IPv6 fully functional. Third, you'll need to check whether 6to4 is available to you. It's very simple: just ping the IPv4 address 192.88.99.1. If you can successfully ping it, then you can use 6to4! And fourth, you must have a way to let your router recognize your external (public) IPv4 address as its own WAN IP. I have AT&amp;T U-verse, so in my case, I just need to have the 2Wire gateway put my Tomato router in DMZ mode. Different ISPs and gateways/modems work differently, so YMMV.</p>
+<p>Once you've verified the requirements, you'll need to flash your router. There are plenty of tutorials on how to do this in case it's not obvious. Also, I must add the mandatory warning that I AM NOT RESPONSIBLE for what you might do to your hardware or software and the issues it might cause. Flashing can be a dangerous procedure and you may end up with a bricked router. Don't say I didn't warn you. Flash it with a version of the <a href="http://tomatousb.org/links">Toastman compiles</a>. I used &quot;tomato-K26USB-1.28.7475.2MIPSR2-Toastman-RT-VPN.trx&quot; for my Asus RT-N16. The default gateway is 192.168.1.1 and the default username/password combo is admin/admin.</p>
+<p>After configuring your standard router settings, go to the Overview page and make sure &quot;IP Address&quot; under &quot;WAN&quot; shows your public IP. If it doesn't, then you'll need to figure out why and fix it. See above for what I did. Then go to the IPv6 page under the Basic section. Choose &quot;6to4 Anycast Relay&quot; and leave the rest of the fields as they are. Save the configuration.</p>
+<p>Believe it or not, you're pretty much done. At this point, if you refresh your IPv6-ready computer's network settings (maybe do a DHCP release/renew just in case), you should have a public and fully functional IPv6 address. By default, Tomato blocks all TCP and UDP packets to your IPv6 devices. However, it doesn't block ICMPv6 Echo, otherwise known as Ping. If you want your router and your client computers to not receive IPv6 pings from the Internet, do the following. Go to the Scripts page under Administration, and select the Firewall tab. Add the following two lines to it:</p>
+<pre><code>ip6tables -I INPUT -i v6to4 -p icmpv6 --icmpv6-type echo-request -j DROP  
+ip6tables -I FORWARD -i v6to4 -p icmpv6 --icmpv6-type echo-request -j DROP
+</code></pre>
+<p>The first line prevents the router from responding to pings from the Internet, and the second one does the same for all the clients. Save the configuration and reboot the router. Congratulations, you're done! Wasn't that easy?</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/19';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

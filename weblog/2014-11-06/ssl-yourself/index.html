@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>SSL yourself - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">SSL yourself</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2014-11-06T14:00:00">
+            Published on Thursday, 6 November 2014 at 9:00 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>Hey, you! Do you have a blog? Or a website? Now, tell me this: is it accessible over HTTPS? If you're like most people, your answer is going to be something along the lines of, &quot;No, why should I bother? I have nothing security-critical on my site, and I'm certainly not accepting credit cards for people to enter.&quot; That's a perfectly valid response. But I ask you to be just a little more forward-looking. Wouldn't it be wonderful if you didn't have to worry about whether you're really accessing your bank's website and not that of some scammer? Or if the information you're entering at the local cafe is being intercepted by someone sitting two tables away?</p>
+<p>These are not simple issues to solve, and serving your personal blog over SSL seems almost entirely unrelated. But it is indeed related: we want to get to a point where everything on the web is <em>secure by default</em>. That means, among other things, that everything is transferred securely without the ability to fall back to the old, insecure protocols from the 1980s and 1990s. And you can take a small, but significant, step in that direction by serving your website over SSL. If enough people do this, then perhaps someday HTTP without the S at the end of it can be deprecated and eventually removed. I know, it's quite a lofty goal. But it can be achieved with small steps taken by everyone together.</p>
+<p>&quot;All right, let's say I want to be part of this Utopian vision of yours,&quot; you say, &quot;but I don't want to pay for a dedicated IP address or for an SSL certificate. It's still not worth it for me.&quot; Well, I have good news for you. Neither of those is required anymore - thanks to <a href="https://www.cloudflare.com">CloudFlare</a>. If you don't have a dedicated IP address for your site or if you don't have a valid SSL certificate, you can still serve your website over SSL and have it work in the majority of browsers and operating systems. To overcome the IP address problem, CloudFlare has implemented <a href="http://en.wikipedia.org/wiki/Server_Name_Indication">SNI</a>, and to overcome the valid SSL certificate problem they've started issuing their own SSL certificates for everyone who signs up - even those with free accounts! (The certificates are from Comodo, but CloudFlare has a sub-CA.)</p>
+<p>&quot;This is all very interesting, but I don't host my own blog. Someone else does it for me.&quot; In that case, I humbly ask that you become an activist. Don't worry, I don't want to start an &quot;occupy the blogosphere&quot; movement. But a single email or support ticket requesting SSL support can go a long way - especially if a whole bunch of people do it.</p>
+<p>The World Wide Web is constantly evolving, and you can help it evolve in the right direction. Taking a small step towards being secure by default right now will allow for larger steps in the future, and maybe, just maybe, someday we won't have to be concerned so much with the security of our information, and we could focus on tackling more pertinent issues.</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = '2014-11-06T14:00:00';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>

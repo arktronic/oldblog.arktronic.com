@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link type="text/css" rel="stylesheet" href="/assets/grid.css?v=7A84A231C2A724CC60258D1739CD89ED4BA799BE" media="all" />
+    <link type="text/css" rel="stylesheet" href="/assets/main.css?v=CD2F883D306A47EB3F204FE4349CC58B80D7DE3C" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="Main feed" href="http://arktronic.com/rss.xml" />
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>Good app vs. great app: resilience - Arktronic.com</title>
+    <script src="/assets/privacy-and-track.js"></script>
+</head>
+<body class="container_12">
+    <header class="grid_12 banner small">
+        <h1><a href="/">Arktronic.com</a></h1>
+        <h2><a href="/">/weblog</a></h2>
+        <div>
+            <a href="/">Arktronic.com</a>
+            •
+            <a href="http://arkconcepts.com">ARKconcepts.com</a>
+            •
+            <a href="https://twitter.com/Arktronic">Twitter</a>
+        </div>
+    </header>
+    <div class="clear">&nbsp;</div>
+    <article class="grid_10" itemscope itemtype="http://schema.org/Article">
+        <h1 class="title" itemprop="headline">Good app vs. great app: resilience</h1>
+        <h4 class="metadata">
+            <span itemprop="datePublished" content="2011-08-02T04:57:36">
+            Published on Tuesday, 2 August 2011 at 12:57 AM
+            </span>
+        </h4>
+        <div itemprop="articleBody">
+        <p>I strongly believe that a distinguishing mark between a good app and a great app is resilience, or in other words, its ability to adapt to unusual conditions. Naturally, it's up to the app's architects and developers to make it resilient, but too often I see apps that break with the slightest change of an upstream API. This has been observed not only with small, relatively unknown apps, but also with some high profile ones, such as the official Facebook app for Windows Phone. Why is this behavior so prevalent? The way I see it, there are three separate causes, any one of which can create this problem: lack of experience, thoughtlessness, and (of course) laziness.</p>
+<p><strong>The causes</strong></p>
+<p>Let's start with lack of experience. This happens more to young developers, obviously, because they haven't yet had projects suddenly start failing on them for no apparent reason. Seasoned developers are guaranteed to have experienced this, and quite often due to a third party screwing up the APIs they are accessing. Unfortunately, not much can be done to alleviate a lack of experience aside from, well, gaining some experience! The more clever developers will gain experience by watching others fail and learning from those mistakes. The average developers will gain experience by failing themselves and learning from that. The below average devs fall into the second cause, thoughtlessness.</p>
+<p>When people don't learn from their own mistakes, they are bound to repeat them. In the narrow situation that's being discussed here, I'm going to call that thoughtlessness. When architects/developers should be aware of potential issues (considering their experience), and yet do nothing about them, it's thoughtless. In fact, I would go so far as to say that they are bad architects/developers. I would not want to work with them. Or look at their code. I do not know if anything can be done with such people to make them better. If there is, I haven't come across it. And that's sad.</p>
+<p>Now we come to laziness. Larry Wall famously wrote that laziness is one of three <a href="http://en.wikipedia.org/wiki/Larry_Wall#Virtues_of_a_programmer">great virtues of a programmer</a>. However, when laziness isn't tempered with the other two, impatience and hubris, it quickly goes from virtue to vice. I have occasionally been guilty of this myself. Sometimes, when I really want to get an app functioning, I'll forgo good techniques in favor of quick turnaround. I (usually) force myself to fix particularly bad code later on. Many others do not. When people release apps that were lazily coded, those apps should be expected to easily break. Sometimes small utilities with a very limited scope are fine to release without much error handling. They just aren't that important. But a public app that is submitted to an app store should never fall into that category. If developers are taking the time to release their apps to the public, <em>especially</em> if those apps aren't free, they must be resilient.</p>
+<p><strong>A real world counter-example</strong></p>
+<p>I must confess, the catalyst for my writing this blog post is that one of my apps has proven to be resilient this past weekend, and I realized that many others would not have coded it to be so. ArkWords, my free dictionary/thesaurus/translator for Windows Phone, has a popular feature called Word of the Day. It's pretty self-explanatory. What's interesting about it, though, is that I wrote a web service that sends a Live Tile image with the current word as well as the day of the week that's associated with that word. My upstream provider, the awesome <a href="http://www.wordnik.com">Wordnik.com</a>, has always released new WotD entries during weekdays, so the Live Tile for Friday would show &quot;Fri/Sat/Sun&quot; for the day because otherwise people would think something is wrong when it's Sunday and they're seeing the word from Friday. The app itself has a highlighted sentence at the top of the WotD definition stating, to which day(s) the current word applies. As you might have guessed, this weekend Wordnik, for whatever reason, decided to release new WotD entries both Saturday and Sunday. Both ArkWords and the web service handled this change perfectly. Obviously, &quot;Fri/Sat/Sun&quot; for Friday's word of the day wasn't entirely accurate anymore, but the Live Tile and the app displayed Saturday's and Sundays words of the day exactly as they should have, with proper day labels and everything.</p>
+<p>I think this is a prime example of app resilience. I'm not trying to praise my own skills here. I only want people realize that it's important to make their apps resilient. Lots and lots of apps consume third party APIs. Developers and architects must be aware of the dangers associated with their use. How will <em>your</em> app react to an upstream change?</p>
+
+        </div>
+    </article>
+    <div class="grid_2 sidebar">
+        <div class="search content">
+            <form action="//www.google.com/cse" method="get" onsubmit="return verifySearchForm();">
+                <input type="hidden" name="cx" value="004579624084621022791:wskxubtpw6k"/>
+                <input type="text" name="q" id="search-input-textbox"></input><br />
+                <input type="submit" value="Search the site" class="button"></input>
+            </form>
+            <script type="text/javascript">
+                function verifySearchForm() {
+                    return (document.getElementById("search-input-textbox").value != "");
+                }
+            </script>
+        </div>
+        <div class="about content">
+            <h3>About</h3>
+            <p>
+                Hi, I'm Sasha. On this site I blog about what's on my mind - be it a discussion of a news article, a rant, a project, or whatever else.
+            </p>
+            <p>
+                If you'd like to contact me, the easiest way to do so is via <a href="https://twitter.com/Arktronic">Twitter</a>.
+            </p>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    
+    <div class="grid_10">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'arktronic'; // required: replace example with your forum shortname
+            
+            var disqus_identifier = 'node/20';
+            
+            if(document.location.hostname.indexOf('arktronic.com') == 0) {
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            
+            }
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    
+    <div class="clear">&nbsp;</div>
+    <footer class="grid_10">
+        <hr />
+        <p>Copyright &copy; <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Sasha Kotlyar.</span></span> Not responsible for comments made by others. <a href="/privacy.html">Privacy policy</a></p>
+    </footer>
+</body>
+</html>
